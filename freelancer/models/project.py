@@ -1,8 +1,7 @@
 class Project:
-    def __init__(self, project_id, title, description, budget, client, deadline):
+    def __init__(self, project_id, title, budget, client, deadline):
         self.id = project_id
         self.title = title
-        self.description = description
         self.budget = budget
         self.client = client
         self.freelancer = None
@@ -11,7 +10,7 @@ class Project:
         self.milestones = []
 
     def __str__(self):
-        return f"Project ID: {self.id} | Title: {self.title} | Status: {self.status}"
+        return f"Project ID: {self.id} , Title: {self.title} , Status: {self.status}"
 
     def update_status(self):
         if self.milestones:
