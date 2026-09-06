@@ -5,29 +5,35 @@ from .project import Project
 class Client(User):
 
     def __init__(self, user_id, name, email, password):
-        super().__init__(user_id, name, email, password, "Client")
+        super().__init__(
+            user_id,
+            name,
+            email,
+            password,
+            "Client"
+        )
 
-        # projects_created will hold the projects that the client has created
+        # Projects created by this client
         self.projects_created = []
 
-        # sent_requests will hold the project requests
-        # that the client has sent to freelancers
+        # Project requests sent to freelancers
         self.sent_requests = []
 
-        # messages will hold the messages that the client has received
+        # Messages received from freelancers
         self.messages = []
 
+    # =========================================================
+    # PROJECT METHODS
+    # =========================================================
 
     def add_project(self, project):
         """
         Add a new project to the client's projects.
         """
 
-        # Make sure the object is a Project
         if not isinstance(project, Project):
             raise TypeError("project must be a Project object.")
 
-        # Prevent adding the same project twice
         if project in self.projects_created:
             raise ValueError("This project already exists.")
 
@@ -46,7 +52,7 @@ class Client(User):
             print("No projects created yet.")
             return
 
-        print("\n===== My Projects =====")
+        print("\n========== MY PROJECTS ==========")
 
         for project in self.projects_created:
             print(project)
@@ -57,7 +63,6 @@ class Client(User):
         """
 
         for project in self.projects_created:
-
             if project.id == project_id:
                 return project
 
@@ -80,7 +85,10 @@ class Client(User):
 
         return True
 
-    # Request Methods
+    # =========================================================
+    # REQUEST METHODS
+    # =========================================================
+
     def add_request(self, request):
         """
         Add a project request sent by the client.
@@ -91,7 +99,7 @@ class Client(User):
 
         self.sent_requests.append(request)
 
-        print("Project request sent successfully.")
+        print("Project request added successfully.")
 
         return request
 
@@ -104,11 +112,10 @@ class Client(User):
 
     def get_request_by_id(self, request_id):
         """
-        Find a project request using its ID.
+        Find a request using its ID.
         """
 
         for request in self.sent_requests:
-
             if request.id == request_id:
                 return request
 
@@ -116,23 +123,25 @@ class Client(User):
 
     def view_requests(self):
         """
-        Display all project requests sent by the client.
+        Display all requests sent by the client.
         """
 
         if not self.sent_requests:
             print("No project requests sent yet.")
             return
 
-        print("\n===== Sent Project Requests =====")
+        print("\n========== SENT REQUESTS ==========")
 
         for request in self.sent_requests:
             print(request)
 
-    
-    # message Methods
+    # =========================================================
+    # MESSAGE METHODS
+    # =========================================================
+
     def add_message(self, message):
         """
-        Add a received message to the client's messages.
+        Add a message received by the client.
         """
 
         self.messages.append(message)
@@ -157,20 +166,54 @@ class Client(User):
             print("No messages yet.")
             return
 
-        print("\n===== Messages =====")
+        print("\n========== MESSAGES ==========")
 
         for message in self.messages:
             print(message)
 
-    # profile Methods
+    # =========================================================
+    # PROFILE
+    # =========================================================
+
     def display_profile(self):
         """
         Display the client's profile information.
         """
 
-        # Call the parent User display_profile method
         super().display_profile()
 
         print(f"Projects Created: {len(self.projects_created)}")
         print(f"Sent Requests: {len(self.sent_requests)}")
         print(f"Messages: {len(self.messages)}")
+
+    # =========================================================
+    # JSON METHODS
+    # =========================================================
+
+    def to_dict(self):
+        """
+        Convert the Client object into a dictionary
+        so it can be saved in JSON.
+        """
+
+        return {
+            "user_id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "password": self.password,
+            "role": self.role
+        }
+
+    @classmethod
+    def from_dict(cls, user_id, data):
+        """
+        Recreate a Client object from dictionary data
+        loaded from JSON.
+        """
+
+        return cls(
+            user_id,
+            data["name"],
+            data["email"],
+            data["password"]
+        )
