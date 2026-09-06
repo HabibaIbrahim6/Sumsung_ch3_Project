@@ -79,6 +79,31 @@ def get_milestones():
     return milestones
 
 
+def create_list_of_candidate_projects_for_invoicing(current_client):
+    return list(filter(lambda project: (project.status == "Completed" and project.invoice is None),current_client.projects_created))
+
+
+#=================== CLOSURE FUNCTION ===================
+
+def commission_rate(budget):
+    if budget <= 500:
+        rate = 0.05
+    elif budget < 5000:
+        rate = 0.08
+    else:
+        rate = 0.10
+
+    def commission_amount():
+        return budget * rate
+
+    return commission_amount
+
+
+
+
+
+
+
 
 
 

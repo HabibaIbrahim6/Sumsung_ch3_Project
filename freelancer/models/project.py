@@ -8,6 +8,7 @@ class Project:
         self.status = "Open"
         self.deadline = deadline
         self.milestones = milestones
+        self.invoice = None
 
     def __str__(self):
         return f"Project ID: {self.id} , Title: {self.title} , Status: {self.status}"
