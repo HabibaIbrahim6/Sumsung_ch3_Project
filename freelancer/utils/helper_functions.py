@@ -110,19 +110,3 @@ def commission_rate(budget):
 
 
 
-
-
-
-
-
-
-#=================== FOR CLIENT MENU ===================
-
-
-
-def print_client_menu():
-    print("1. Create project")
-    print("2. Assign project")
-    print("3. Update milestone")
-    print("4. Generate invoice")
-    print("5. Log out")
