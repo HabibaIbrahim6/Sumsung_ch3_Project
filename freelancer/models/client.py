@@ -22,9 +22,7 @@ class Client(User):
         # Messages received from freelancers
         self.messages = []
 
-    # =========================================================
-    # PROJECT METHODS
-    # =========================================================
+   
 
     def add_project(self, project):
         """
@@ -63,6 +61,7 @@ class Client(User):
         """
 
         for project in self.projects_created:
+
             if project.id == project_id:
                 return project
 
@@ -85,10 +84,7 @@ class Client(User):
 
         return True
 
-    # =========================================================
-    # REQUEST METHODS
-    # =========================================================
-
+    
     def add_request(self, request):
         """
         Add a project request sent by the client.
@@ -116,6 +112,7 @@ class Client(User):
         """
 
         for request in self.sent_requests:
+
             if request.id == request_id:
                 return request
 
@@ -135,10 +132,7 @@ class Client(User):
         for request in self.sent_requests:
             print(request)
 
-    # =========================================================
-    # MESSAGE METHODS
-    # =========================================================
-
+   
     def add_message(self, message):
         """
         Add a message received by the client.
@@ -171,10 +165,7 @@ class Client(User):
         for message in self.messages:
             print(message)
 
-    # =========================================================
-    # PROFILE
-    # =========================================================
-
+   
     def display_profile(self):
         """
         Display the client's profile information.
@@ -182,13 +173,20 @@ class Client(User):
 
         super().display_profile()
 
-        print(f"Projects Created: {len(self.projects_created)}")
-        print(f"Sent Requests: {len(self.sent_requests)}")
-        print(f"Messages: {len(self.messages)}")
+        print(
+            f"Projects Created: "
+            f"{len(self.projects_created)}"
+        )
 
-    # =========================================================
-    # JSON METHODS
-    # =========================================================
+        print(
+            f"Sent Requests: "
+            f"{len(self.sent_requests)}"
+        )
+
+        print(
+            f"Messages: "
+            f"{len(self.messages)}"
+        )
 
     def to_dict(self):
         """
@@ -201,19 +199,42 @@ class Client(User):
             "name": self.name,
             "email": self.email,
             "password": self.password,
-            "role": self.role
+            "role": self.role,
+
+            "projects_created": [
+                project.to_dict()
+                for project in self.projects_created
+            ],
+
+            "sent_requests": [],
+
+            "messages": []
         }
 
     @classmethod
     def from_dict(cls, user_id, data):
         """
-        Recreate a Client object from dictionary data
-        loaded from JSON.
+        Recreate a Client object from dictionary data.
         """
 
-        return cls(
+        client = cls(
             user_id,
             data["name"],
             data["email"],
             data["password"]
         )
+
+        # Restore client's projects
+        for project_data in data.get(
+            "projects_created",
+            []
+        ):
+
+            project = Project.from_dict(
+                project_data,
+                client
+            )
+
+            client.projects_created.append(project)
+
+        return client
