@@ -6,6 +6,7 @@ from datetime import datetime
 EMAIL_PATTERN = re.compile(r"^[\w.]+@(gmail|yahoo)\.com$")
 PASSWORD_PATTERN = re.compile(r"^(?=.*\d)(?=.*[!@#$%^&*]).{9,}$")
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+PHONE_PATTERN = re.compile(r"01[0125]\d{8}")
 
 
 # ---------- Validation Functions ----------
@@ -24,7 +25,7 @@ def is_valid_phone(phone):
     """
     Check if the phone number is a valid Egyptian mobile number.
     """
-    return bool(re.fullmatch(r"01\d{9}", phone))
+    return bool(PHONE_PATTERN.fullmatch(phone))
 
 # check if the date is valid
 DATE_PATTERN = re.compile(r"^\d{1,2}/\d{1,2}/\d{4}$")
