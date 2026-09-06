@@ -1,3 +1,5 @@
+from ..utils.helper_functions import  print_menu
+
 class Project:
     def __init__(self,project_id, title, budget, client, deadline, milestones):
         self.id = project_id
@@ -26,8 +28,8 @@ class Project:
         if not self.milestones:
             print("This project has no milestones.")
             return
-        for index, milestone in enumerate(self.milestones, start=1):
-            print(f"{index}) {milestone}")
+        print_menu(self.milestones)
+
 
 
     def assign_freelancer(self, freelancer):

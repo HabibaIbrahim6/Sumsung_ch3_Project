@@ -188,7 +188,24 @@ class FreelanceManager:
 
 
         elif choice == 4:
-            pass
+            candidate_projects = helper_functions.create_list_of_candidate_projects_for_invoicing(current_client)
+            if not candidate_projects:
+                print("There are no projects available for invoicing.")
+            else:
+
+                helper_functions.print_menu(candidate_projects)
+
+                choice = helper_functions.get_menu_choice(1,len(candidate_projects),"Choose a project to invoice")
+
+                project = candidate_projects[choice - 1]
+                invoice_id = helper_functions.generate_id("INV")
+                invoice = Invoice( invoice_id, project.id,project.budget)
+                project.invoice = invoice
+                print ("---Invoice created successfully---")
+                invoice.display_invoice()
+
+
+
         elif choice == 5:
             # I want to return to log in/regester menu
             pass

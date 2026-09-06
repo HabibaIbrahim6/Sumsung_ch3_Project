@@ -86,6 +86,14 @@ def create_list_of_candidate_projects_for_invoicing(current_client):
     return list(filter(lambda project: (project.status == "Completed" and project.invoice is None),current_client.projects_created))
 
 
+
+def print_menu(iterable):
+    cnt = 0
+    for project in iterable:
+        cnt += 1
+        print(f"{cnt}) {project}")
+
+
 #=================== CLOSURE FUNCTION ===================
 
 def commission_rate(budget):

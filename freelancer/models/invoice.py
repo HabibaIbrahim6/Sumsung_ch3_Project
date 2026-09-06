@@ -9,13 +9,14 @@ class Invoice:
         self.status = "unpaid"
 
         calculate_commission = commission_rate(amount)
-        self.commission = calculate_commission()
-        self.freelancer_earnings = amount - self.commission
+
+        self.platform_commission = calculate_commission()
+        self.freelancer_earnings = amount - self.platform_commission
 
     def display_invoice(self):
         print(f"Invoice ID: {self.invoice_id}")
         print(f"Project ID: {self.project_id}")
-        print(f"Amount: ${self.amount:.2f}")
+        print(f"Total Amount: ${self.amount:.2f}")
         print(f"Status: {self.status}")
-        print(f"Commission: ${self.commission:.2f}")
+        print(f"Platform commission: ${self.platform_commission:.2f}")
         print(f"Freelancer earnings: ${self.freelancer_earnings:.2f}")
