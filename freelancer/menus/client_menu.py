@@ -1,3 +1,4 @@
+from models.invoice import Invoice
 from ..models.project import Project
 from ..models.client import Client
 from ..utils import validators as val
@@ -25,11 +26,13 @@ class ClientMenu:
             print("5. View Sent Requests")
             print("6. View Messages")
             print("7. View Profile")
-            print("8. Delete Project")
-            print("9. Logout")
+            print("8. Update Milestones")
+            print("9. Generate Invoice")
+            print("10. Delete Project")
+            print("11. Logout")
             print("=================================")
 
-            choice = helper_functions.get_menu_choice(1, 9)
+            choice = helper_functions.get_menu_choice(1, 11)
 
             if choice == 1:
                 self.create_project()
@@ -53,9 +56,15 @@ class ClientMenu:
                 self.view_profile()
 
             elif choice == 8:
-                self.delete_project()
+                self.update_milestones()
 
             elif choice == 9:
+                self.generate_invoice()
+
+            elif choice == 10:
+                self.delete_project()
+
+            elif choice == 11:
                 print("Logged out successfully.")
                 break
 
@@ -73,16 +82,7 @@ class ClientMenu:
         print(f"Generated Project ID: {project_id}")
 
 
-        while True:
-
-            title = input("Enter project title: ").strip()
-
-            if title:
-                break
-
-            print("Title cannot be empty.")
-
-   
+        title = val.get_valid_title("Enter project title: ")
 
         while True:
 
@@ -95,38 +95,11 @@ class ClientMenu:
 
             print("Description cannot be empty.")
 
+        budget = val.get_valid_amount("Enter the project budget: ")
 
+        deadline = val.get_valid_deadline("Enter the project deadline YYYY-MM-DD: ")
 
-        while True:
-
-            budget_input = input(
-                "Enter project budget: "
-            ).strip()
-
-            if val.is_valid_amount(budget_input):
-                budget = float(budget_input)
-                break
-
-            print(
-                "Invalid budget. "
-                "Please enter a number greater than 0."
-            )
-
-
-        while True:
-
-            deadline = input(
-                "Enter project deadline (YYYY-MM-DD): "
-            ).strip()
-
-            if val.is_valid_date(deadline):
-                break
-
-            print(
-                "Invalid deadline. "
-                "Use YYYY-MM-DD format."
-            )
-
+        milestones = helper_functions.get_milestones()
 
         try:
 
@@ -135,10 +108,11 @@ class ClientMenu:
                 title,
                 description,
                 budget,
-                self.client
+                self.client,
+                deadline,
+                milestones
             )
 
-            project.deadline = deadline
 
             self.client.create_project(project)
             self.manager.save_users()
@@ -151,6 +125,7 @@ class ClientMenu:
         except (ValueError, TypeError, AttributeError) as error:
 
             print(f"Error: {error}")
+
 
     def view_projects(self):
 
@@ -240,6 +215,7 @@ class ClientMenu:
 
         self.client.view_requests()
 
+
     def view_messages(self):
 
         self.client.view_messages()
@@ -288,3 +264,43 @@ class ClientMenu:
         # Remove it from manager too
         if project in self.manager.projects:
             self.manager.projects.remove(project)
+
+
+    def update_milestones(self):
+        print("\n========== UPDATE MILESTONES ==========")
+        print("Enter the project ID:")
+        project_id = input()
+        current_project = self.client.get_project_by_id(project_id)
+
+        if current_project is None:
+            print("Project ID not found.")
+
+        else:
+            current_project.print_milestones()
+
+            milestone_choice = helper_functions.get_menu_choice(1, len(current_project.milestones),
+                                                                "Choose milestone to update")
+
+            current_milestone = current_project.milestones[milestone_choice - 1]
+            new_status = helper_functions.get_new_milestone_status()
+            current_milestone.update_status(new_status)
+            current_project.update_project_status()
+
+
+    def generate_invoice(self):
+        print("\n========== GENERATE INVOICE ==========")
+        candidate_projects = helper_functions.create_list_of_candidate_projects_for_invoicing(self.client)
+        if not candidate_projects:
+            print("There are no projects available for invoicing.")
+        else:
+
+            helper_functions.print_menu(candidate_projects)
+
+            choice = helper_functions.get_menu_choice(1, len(candidate_projects), "Choose a project to invoice")
+
+            project = candidate_projects[choice - 1]
+            invoice_id = helper_functions.generate_id("INV",1) #1 is a placeholder till I  find a solution
+            invoice = Invoice(invoice_id, project.id, project.budget)
+            project.invoice = invoice
+            print("\n========== INVOICE GENERATED SUCCESSFULLY ==========")
+            invoice.display_invoice()

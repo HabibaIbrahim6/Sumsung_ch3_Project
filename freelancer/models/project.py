@@ -1,7 +1,7 @@
 from ..utils.helper_functions import  print_menu
 
 class Project:
-    def __init__(self,project_id, title, budget, client, deadline, milestones):
+    def __init__(self,project_id, title,description, budget, client, deadline, milestones):
         self.id = project_id
         self.title = title
         self.budget = budget

@@ -51,10 +51,8 @@ def get_menu_choice(minimum , maximum, message="Enter your choice "):
 
         print("Invalid choice, Try again")
 
-
 def generate_id(prefix,counter):
     return f"{prefix}{counter:03}"
-
 
 def get_milestones():
     print("Enter at least one milestone , enter 'EXIT' after finishing \n")
