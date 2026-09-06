@@ -17,6 +17,9 @@ def is_valid_email(email):
 def is_valid_password(password):
     return bool(PASSWORD_PATTERN.fullmatch(password))
 
+def check_password(self, password):
+        return self.password == password
+
 def is_valid_phone(phone):
     """
     Check if the phone number is a valid Egyptian mobile number.

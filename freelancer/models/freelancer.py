@@ -19,10 +19,6 @@ class Freelancer(User):
                 print(project)
 
     def assign_project(self, project):
-
-        if not isinstance(project, Project):
-            raise TypeError("project must be a Project object.")
-
         self.assigned_projects.append(project)
 
 

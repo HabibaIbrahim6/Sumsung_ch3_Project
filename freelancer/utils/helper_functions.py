@@ -1,3 +1,6 @@
+from freelancer.models.freelancer import Freelancer
+
+
 def get_new_milestone_status():
     status_options = {
         "1": "Pending",
@@ -12,10 +15,10 @@ def get_new_milestone_status():
         choice = input("Invalid choice. Please try again: ")
     return status_options[choice]
 
-def find_by_id(items, target_id):
-    for item in items:
-        if item.id == target_id:
-            return item
+def find_freelancer(users, id) -> "Freelancer | None":
+    for user in users:
+        if user.id == id:
+            return user
     return None
 
 def get_milestone_choice(minimum , maximum):

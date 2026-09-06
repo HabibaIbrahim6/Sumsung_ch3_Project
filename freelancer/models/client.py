@@ -55,7 +55,7 @@ class Client(User):
         for project in self.projects_created:
             print(project)
 
-    def get_project_by_id(self, project_id):
+    def get_project_by_id(self, project_id) -> "Project | None":
         """
         Find a project using its ID.
         """

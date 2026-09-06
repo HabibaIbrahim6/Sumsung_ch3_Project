@@ -7,14 +7,6 @@ class User:
         self.password = password
         self.role = role
 
-    def check_password(self, password):
-        """
-        Check if the entered password matches
-        the user's password.
-        """
-
-        return self.password == password
-
     def display_profile(self):
         """
         Display basic user information.
