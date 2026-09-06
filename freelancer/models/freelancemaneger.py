@@ -5,6 +5,7 @@ from .freelancer import Freelancer
 from .project import Project
 from .invoice import Invoice
 from ..utils import helper_functions
+from ..utils import validators
 
 
 class FreelanceManager:
@@ -112,7 +113,7 @@ class FreelanceManager:
 
     def register_freelancer(self, name, phone_num, password, skills):
 
-        user_id = f"F{len(self.users) + 1}"
+        user_id = helper_functions.generate_id("F", len(self.users) + 1)
 
         freelancer = Freelancer(
             user_id,
@@ -135,8 +136,13 @@ class FreelanceManager:
         choice = helper_functions.get_menu_choice(1, 5)
 
         if choice == 1:
+
             project_id = helper_functions.generate_id("P", len(current_client.projects_created) + 1)
-            new_project = Project(project_id, "title", "budget", "client", 'deadline')
+            title = validators.get_valid_title("Enter project title: ")
+            budget = validators.get_valid_amount("Enter the project budget: ")
+            deadline = validators.get_valid_deadline("Enter the project deadline in YYYY-MM-DD format: ")
+            new_project = Project(project_id, title, budget, current_client, deadline)
+            current_client.add_project(new_project)
 
         elif choice == 2:
             pass
@@ -144,7 +150,8 @@ class FreelanceManager:
         elif choice == 3:
             print("Enter the project ID:")
             project_id = input()
-            current_project = helper_functions.find_by_id(current_client.projects_created, project_id)
+            current_project = current_client.get_project_by_id(project_id)
+
             if current_project is None:
                 print("Project ID not found.")
 

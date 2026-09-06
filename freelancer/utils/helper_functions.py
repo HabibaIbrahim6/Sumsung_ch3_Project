@@ -54,7 +54,14 @@ def generate_id(prefix,counter):
 
 
 
+
+
+
+
+
 #=================== FOR CLIENT MENU ===================
+
+
 
 def print_client_menu():
     print("1. Create project")

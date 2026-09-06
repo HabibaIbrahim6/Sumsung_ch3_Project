@@ -18,7 +18,7 @@ class Client(User):
         self.messages = []
 
 
-    def create_project(self, project):
+    def add_project(self, project):
         """
         Add a new project to the client's projects.
         """

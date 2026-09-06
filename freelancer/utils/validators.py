@@ -1,7 +1,6 @@
 import re
 from datetime import datetime
 
-
 # ---------- Regex Patterns ----------
 
 EMAIL_PATTERN = re.compile(r"^[\w.]+@(gmail|yahoo)\.com$")
@@ -30,8 +29,52 @@ def is_valid_date(date):
         return False
 
 
+def get_valid_deadline(message):
+    while True:
+        date_input = input(message).strip()
+
+        if is_valid_date(date_input):
+            deadline_date = datetime.strptime(date_input, "%Y-%m-%d")
+
+            if deadline_date.date() > datetime.today().date():
+                return date_input
+            else:
+                print("The deadline must be a date in the future ")
+        else:
+            print("Please enter a valid date format ")
+
+
 def is_valid_amount(amount):
     try:
         return float(amount) > 0
     except (ValueError, TypeError):
         return False
+
+
+def get_valid_title(message):
+    while True:
+        title = input(message).strip()
+
+        if not title:
+            print("Title cannot be empty or just spaces, Try again.")
+        elif len(title) < 3:
+            print("Title must be at least 3 characters long.")
+        elif len(title) > 50:
+            print("Title cannot exceed 50 characters.")
+        else:
+            return title
+
+
+def get_valid_amount(message):
+    while True:
+        amount = input(message).strip()
+        try:
+            valid_amount = float(amount)
+
+            if valid_amount > 0:
+                return valid_amount
+            else:
+                print("Amount must be greater than 0")
+
+        except ValueError:
+            print("Please enter a valid number")

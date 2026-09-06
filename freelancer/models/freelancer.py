@@ -1,4 +1,5 @@
 from .user import User
+from .project import Project
 
 
 class Freelancer(User):
@@ -16,6 +17,16 @@ class Freelancer(User):
             print("Assigned projects:")
             for project in self.assigned_projects:
                 print(project)
+
+    def assign_project(self, project):
+
+        if not isinstance(project, Project):
+            raise TypeError("project must be a Project object.")
+
+        self.assigned_projects.append(project)
+
+        print("Project assigned successfully to ", self.name)
+
 
     def to_dict(self):
         data = super().to_dict()
