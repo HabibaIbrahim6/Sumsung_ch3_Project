@@ -8,11 +8,14 @@ from ..utils import helper_functions
 class FreelanceManager:
 
     def __init__(self):
-        # Store all users using their ID as the key
-        self.users = {}
+        self.users = {}  # Dictionary to store users by their ID
 
-        # Load saved users when the program starts
+        # Load users from data.jsonl
         self.load_users()
+      
+   
+        self.projects = []
+   
 
      
     def load_users(self):
@@ -203,4 +206,14 @@ class FreelanceManager:
         """
 
         return self.users.get(user_id)
+    
+    def save_users(self):
+
+        with open("data.jsonl", "w") as file:
+
+            for user in self.users.values():
+
+                file.write(
+                    json.dumps(user.to_dict()) + "\n"
+                )
 

@@ -25,18 +25,17 @@ def is_valid_phone(phone):
     return bool(re.fullmatch(r"01\d{9}", phone))
 
 # check if the date is valid
+DATE_PATTERN = re.compile(r"^\d{1,2}/\d{1,2}/\d{4}$")
+
+
 def is_valid_date(date):
     if not DATE_PATTERN.fullmatch(date):
         return False
-    # Check if the date is a valid calendar date
+
     try:
-        # convert the string to a datetime object to validate the date
-        # %Y: Year with century as a decimal number
-        # %m: Month as a zero-padded decimal number
-        # %d: Day of the month as a zero-padded decimal number
-        datetime.strptime(date, "%Y-%m-%d")
+        datetime.strptime(date, "%d/%m/%Y")
         return True
-    
+
     except ValueError:
         return False
 

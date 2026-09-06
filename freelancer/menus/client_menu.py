@@ -1,5 +1,7 @@
 from ..models.project import Project
 from ..models.client import Client
+from ..utils import validators as val
+from ..utils import helper_functions
 
 
 class ClientMenu:
@@ -8,10 +10,11 @@ class ClientMenu:
         self.client = client
         self.manager = manager
 
+    # =========================================================
+    # MAIN MENU
+    # =========================================================
+
     def show_menu(self):
-        """
-        Display the client menu and handle client choices.
-        """
 
         while True:
 
@@ -29,125 +32,211 @@ class ClientMenu:
             print("9. Logout")
             print("=================================")
 
-            choice = input("Enter your choice (1-9): ").strip()
+            choice = helper_functions.get_menu_choice(1, 9)
 
-            if choice == "1":
+            if choice == 1:
                 self.create_project()
 
-            elif choice == "2":
-                self.client.view_projects()
+            elif choice == 2:
+                self.view_projects()
 
-            elif choice == "3":
+            elif choice == 3:
                 self.search_freelancers()
 
-            elif choice == "4":
+            elif choice == 4:
                 self.send_project_request()
 
-            elif choice == "5":
-                self.client.view_requests()
+            elif choice == 5:
+                self.view_requests()
 
-            elif choice == "6":
-                self.client.view_messages()
+            elif choice == 6:
+                self.view_messages()
 
-            elif choice == "7":
-                self.client.display_profile()
+            elif choice == 7:
+                self.view_profile()
 
-            elif choice == "8":
+            elif choice == 8:
                 self.delete_project()
 
-            elif choice == "9":
+            elif choice == 9:
                 print("Logged out successfully.")
                 break
 
-            else:
-                print("Invalid choice. Please enter a number from 1 to 9.")
-
+    # =========================================================
+    # CREATE PROJECT
+    # =========================================================
 
     def create_project(self):
-        """
-        Get project information from the client
-        and create a Project object.
-        """
 
         print("\n========== CREATE PROJECT ==========")
 
-        project_id = input("Enter project ID: ").strip()
-        title = input("Enter project title: ").strip()
-        description = input("Enter project description: ").strip()
+        # Generate ID automatically
+        project_id = helper_functions.generate_id(
+            "P",
+            len(self.manager.projects) + 1
+        )
 
-        # Validate budget
+        print(f"Generated Project ID: {project_id}")
+
+        # -----------------------------
+        # Title validation
+        # -----------------------------
+
+        while True:
+
+            title = input("Enter project title: ").strip()
+
+            if title:
+                break
+
+            print("Title cannot be empty.")
+
+        # -----------------------------
+        # Description validation
+        # -----------------------------
+
+        while True:
+
+            description = input(
+                "Enter project description: "
+            ).strip()
+
+            if description:
+                break
+
+            print("Description cannot be empty.")
+
+        # -----------------------------
+        # Budget validation
+        # -----------------------------
+
+        while True:
+
+            budget_input = input(
+                "Enter project budget: "
+            ).strip()
+
+            if val.is_valid_amount(budget_input):
+                budget = float(budget_input)
+                break
+
+            print(
+                "Invalid budget. "
+                "Please enter a number greater than 0."
+            )
+
+        # -----------------------------
+        # Deadline validation
+        # -----------------------------
+
+        while True:
+
+            deadline = input(
+                "Enter project deadline (YYYY-MM-DD): "
+            ).strip()
+
+            if val.is_valid_date(deadline):
+                break
+
+            print(
+                "Invalid deadline. "
+                "Use YYYY-MM-DD format."
+            )
+
+        # -----------------------------
+        # Create Project
+        # -----------------------------
+
         try:
-            budget = float(input("Enter project budget: ").strip())
 
-            if budget <= 0:
-                print("Budget must be greater than zero.")
-                return
-
-        except ValueError:
-            print("Invalid budget. Please enter a number.")
-            return
-
-        deadline = input("Enter project deadline: ").strip()
-
-        try:
-
-            # Create Project object
             project = Project(
                 project_id,
                 title,
                 description,
                 budget,
-                self.client,
-                deadline # type: ignore
+                self.client
             )
 
-            # Use the method already implemented in Client
-            self.client.create_project(project)
+            project.deadline = deadline
 
-        except (ValueError, TypeError) as error:
+            self.client.create_project(project)
+            self.manager.save_users()
+
+            self.manager.projects.append(project)
+
+            print("\nProject created successfully!")
+            print(f"Project ID: {project_id}")
+
+        except (ValueError, TypeError, AttributeError) as error:
+
             print(f"Error: {error}")
 
-    
+    # =========================================================
+    # VIEW PROJECTS
+    # =========================================================
 
     def view_projects(self):
-        """
-        Display projects created by the client.
-        """
 
         self.client.view_projects()
 
-    
+    # =========================================================
+    # SEARCH FREELANCERS
+    # =========================================================
 
     def search_freelancers(self):
-      pass
+
+        print("\n========== FREELANCERS ==========")
+
+        freelancers = [
+            user
+            for user in self.manager.users.values()
+            if user.role == "Freelancer"
+        ]
+
+        if not freelancers:
+            print("No freelancers available.")
+            return
+
+        for freelancer in freelancers:
+
+            skills = getattr(freelancer, "skills", [])
+
+            if isinstance(skills, list):
+                skills = ", ".join(skills)
+
+            print(
+                f"ID: {freelancer.id} | "
+                f"Name: {freelancer.name} | "
+                f"Skills: {skills}"
+            )
+
+    # =========================================================
+    # SEND PROJECT REQUEST
+    # =========================================================
 
     def send_project_request(self):
-        """
-        Send a project request from the client to a freelancer.
-        """
 
         print("\n========== SEND PROJECT REQUEST ==========")
 
-        # Check if client has projects
         if not self.client.projects_created:
+
             print("You have no projects.")
             print("Please create a project first.")
             return
 
-        # Display client's projects
         self.client.view_projects()
 
         project_id = input(
-            "\nEnter the project ID: "
+            "\nEnter project ID: "
         ).strip()
 
         project = self.client.get_project_by_id(project_id)
 
         if project is None:
+
             print("Project not found.")
             return
 
-        # Display freelancers
         self.search_freelancers()
 
         freelancer_id = input(
@@ -172,47 +261,49 @@ class ClientMenu:
             print("Project request sent successfully.")
 
         except (ValueError, TypeError) as error:
+
             print(f"Error: {error}")
 
-   
+    # =========================================================
+    # VIEW REQUESTS
+    # =========================================================
+
     def view_requests(self):
-        """
-        Display all project requests sent by the client.
-        """
 
         self.client.view_requests()
-        
+
+    # =========================================================
+    # VIEW MESSAGES
+    # =========================================================
 
     def view_messages(self):
-        """
-        Display messages received by the client.
-        """
 
         self.client.view_messages()
 
+    # =========================================================
+    # VIEW PROFILE
+    # =========================================================
 
     def view_profile(self):
-        """
-        Display the client's profile.
-        """
 
         self.client.display_profile()
 
-  
+    # =========================================================
+    # DELETE PROJECT
+    # =========================================================
 
     def delete_project(self):
-        """
-        Delete a project created by the client.
-        """
 
         print("\n========== DELETE PROJECT ==========")
 
         if not self.client.projects_created:
+
             print("You have no projects to delete.")
             return
-
+        # View the client's projects to help them choose which one to delete
         self.client.view_projects()
-
+       
+        #strip() is used to remove any leading or trailing whitespace from the input, ensuring that the project ID is clean and accurate for the lookup.
         project_id = input(
             "\nEnter project ID to delete: "
         ).strip()
@@ -220,6 +311,7 @@ class ClientMenu:
         project = self.client.get_project_by_id(project_id)
 
         if project is None:
+
             print("Project not found.")
             return
 
@@ -230,6 +322,11 @@ class ClientMenu:
         if confirmation != "y":
             print("Delete cancelled.")
             return
+        # The following line calls the delete_project method of the client instance. This method attempts to remove the project with the specified project_id from the client's list of created projects. If the deletion is successful, it returns True; otherwise, it returns False.
+        if self.client.delete_project(project_id):
+            self.manager.save_users()
+            print("Project deleted from saved data.")
 
-        self.client.delete_project(project_id)
-
+        # Remove it from manager too
+        if project in self.manager.projects:
+            self.manager.projects.remove(project)
