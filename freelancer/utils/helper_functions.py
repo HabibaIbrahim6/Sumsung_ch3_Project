@@ -53,7 +53,30 @@ def generate_id(prefix,counter):
     return f"{prefix}{counter:03}"
 
 
+def get_milestones():
+    print("Enter at least one milestone , enter 'EXIT' after finishing \n")
+    milestones = []
 
+    while True:
+        milestone = input("Milestone: ").strip()
+
+        if milestone == "":
+            print("Please enter a milestone")
+            continue
+
+        if milestone.lower() == "exit":
+            if len(milestones) == 0:
+                print("Enter at least one milestone first.")
+                continue
+            else:
+                break
+
+        if milestone not in milestones:
+            milestones.append(milestone)
+        else:
+            print("That milestone already exists. Try again.")
+
+    return milestones
 
 
 

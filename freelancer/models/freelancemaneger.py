@@ -1,124 +1,102 @@
 import json
-
 from .client import Client
 from .freelancer import Freelancer
+from .project import Project
+from .invoice import Invoice
 from ..utils import helper_functions
+from ..utils import validators
 
 
 class FreelanceManager:
-
     def __init__(self):
-        # Store all users using their ID as the key
         self.users = {}
-
-        # Load saved users when the program starts
         self.load_users()
 
-     
+    def menu(self):
+        print("Welcome to the Freelance Management System")
+        print("1. Login")
+        print("2. Register as Client")
+        print("3. Register as Freelancer")
+        print("---------------------------------")
+
+        choice = helper_functions.get_menu_choice(1, 3)
+
+        if choice == 1:
+            user_id = input("Enter your user ID: ")
+            password = input("Enter your password: ")
+            self.login(user_id, password)
+
+        elif choice == 2:
+            name = input("Enter your name: ")
+            phone_num = input("Enter your phone_num: ")
+            password = input("Enter your password: ")
+
+            self.register_client(name, phone_num, password)
+
+        elif choice == 3:
+            name = input("Enter your name: ")
+            phone_num = input("Enter your phone_num: ")
+            password = input("Enter your password: ")
+            skills = input("Enter your skills with comma (,): ").split(",")
+
+            self.register_freelancer(
+                name,
+                phone_num,
+                password,
+                skills
+            )
+
     def load_users(self):
-        """
-        Load users from data.jsonl and recreate their objects.
-        """
-
         try:
-
             with open("data.jsonl", "r") as file:
-
                 for line in file:
-
                     line = line.strip()
-
                     if not line:
                         continue
 
                     user_data = json.loads(line)
-
                     user_id = user_data["user_id"]
 
-                    # Recreate Client object
                     if user_data["role"] == "Client":
-
-                        user = Client.from_dict(
-                            user_id,
-                            user_data
-                        )
-
-                    # Recreate Freelancer object
+                        user = Client.from_dict(user_id, user_data)
                     elif user_data["role"] == "Freelancer":
-
-                        user = Freelancer.from_dict(
-                            user_id,
-                            user_data
-                        )
-
+                        user = Freelancer.from_dict(user_id, user_data)
                     else:
                         continue
 
                     self.users[user_id] = user
 
         except FileNotFoundError:
-            # File doesn't exist yet
-            # It will be created when the first user registers
             return
 
-    # ---------------------------------------------------------
-    # Save User
-    # ---------------------------------------------------------
-
     def append_user(self, user):
-        """
-        Save a user to data.jsonl.
-        """
-
         with open("data.jsonl", "a") as file:
-
-            file.write(
-                json.dumps(user.to_dict()) + "\n"
-            )
-
-    # ---------------------------------------------------------
-    # Login
-    # ---------------------------------------------------------
+            file.write(json.dumps(user.to_dict()) + "\n")
 
     def login(self, user_id, password):
-        """
-        Check user credentials and return the logged-in user.
-        """
 
-        # Check if user exists
         if user_id not in self.users:
-
             print("User not found.")
-            return None
+            return
 
         user = self.users[user_id]
 
-        # Check password
-        if not user.check_password(password):
-
+        if user.check_password(password):
+            print("Login success")
+        else:
             print("Wrong password.")
-            return None
+            return
 
-        print("\nLogin successful!")
-        print(f"Welcome, {user.name}!")
+        if isinstance(user, Client):
+            self.client_menu(user)
 
-        # Return user to MainMenu
-        # MainMenu will decide which menu to open
-        return user
+        # if isinstance(user, Freelancer):
+        #  self.freelancer_menu(user)
 
-   
     def register_client(self, name, phone_num, password):
-        """
-        Create and save a new Client.
-        """
 
-        # Generate unique client ID
-        user_id = helper_functions.generate_id(
-            "C",
-            len(self.users) + 1
-        )
+        user_id = helper_functions.generate_id("C", len(self.users) + 1)
 
-        # Create Client object
         client = Client(
             user_id,
             name,
@@ -126,39 +104,16 @@ class FreelanceManager:
             password
         )
 
-        # Store user in dictionary
         self.users[user_id] = client
 
-        # Save user to JSON
         self.append_user(client)
 
-        print("\nClient registered successfully!")
-        print(f"Your User ID is: {user_id}")
+        print("registered successfully")
 
-        return client
+    def register_freelancer(self, name, phone_num, password, skills):
 
-    # ---------------------------------------------------------
-    # Register Freelancer
-    # ---------------------------------------------------------
+        user_id = helper_functions.generate_id("F", len(self.users) + 1)
 
-    def register_freelancer(
-        self,
-        name,
-        phone_num,
-        password,
-        skills
-    ):
-        """
-        Create and save a new Freelancer.
-        """
-
-        # Generate unique freelancer ID
-        user_id = helper_functions.generate_id(
-            "F",
-            len(self.users) + 1
-        )
-
-        # Create Freelancer object
         freelancer = Freelancer(
             user_id,
             name,
@@ -167,40 +122,52 @@ class FreelanceManager:
             skills
         )
 
-        # Store freelancer
         self.users[user_id] = freelancer
 
-        # Save freelancer to JSON
         self.append_user(freelancer)
 
-        print("\nFreelancer registered successfully!")
-        print(f"Your User ID is: {user_id}")
+        print("registered successfully.")
 
-        return freelancer
+    def client_menu(self, current_client):
 
-    # ---------------------------------------------------------
-    # Get Freelancers
-    # ---------------------------------------------------------
+        helper_functions.print_client_menu()
 
-    def get_freelancers(self):
-        """
-        Return all registered freelancers.
-        """
+        choice = helper_functions.get_menu_choice(1, 5)
 
-        return [
-            user
-            for user in self.users.values()
-            if isinstance(user, Freelancer)
-        ]
+        if choice == 1:
 
-    # ---------------------------------------------------------
-    # Get User By ID
-    # ---------------------------------------------------------
+            project_id = helper_functions.generate_id("P", len(current_client.projects_created) + 1)
+            title = validators.get_valid_title("Enter project title: ")
+            budget = validators.get_valid_amount("Enter the project budget: ")
+            deadline = validators.get_valid_deadline("Enter the project deadline in YYYY-MM-DD format: ")
+            milestones = helper_functions.get_milestones()
+            new_project = Project(project_id, title, budget, current_client, deadline,milestones)
+            current_client.add_project(new_project)
 
-    def get_user_by_id(self, user_id):
-        """
-        Find a user by their ID.
-        """
+        elif choice == 2:
+            pass
 
-        return self.users.get(user_id)
+        elif choice == 3:
+            print("Enter the project ID:")
+            project_id = input()
+            current_project = current_client.get_project_by_id(project_id)
 
+            if current_project is None:
+                print("Project ID not found.")
+
+            else:
+                current_project.print_milestones()
+
+                milestone_choice = helper_functions.get_menu_choice(1, len(current_project.milestones),
+                                                                    "Choose milestone to update")
+
+                current_milestone = current_project.milestones[milestone_choice - 1]
+                new_status = helper_functions.get_new_milestone_status()
+                current_milestone.update_status(new_status)
+                current_project.update_project_status()
+
+
+        elif choice == 4:
+            pass
+        elif choice == 5:
+            pass
