@@ -12,16 +12,23 @@ class Project:
     def __str__(self):
         return f"Project ID: {self.id} , Title: {self.title} , Status: {self.status}"
 
-    def update_status(self):
+    def update_project_status(self):
+
         if self.milestones:
             if all(milestone.status == "Completed" for milestone in self.milestones):
                 self.status = "Completed"
-            elif any(milestone.status == "In Progress" for milestone in self.milestones):
+            elif any(milestone.status != "Pending" for milestone in self.milestones):
                 self.status = "In Progress"
 
-    def update_milestone_status(self, milestone_id, new_status):
-        for milestone in self.milestones:
-            if milestone.id == milestone_id:
-                milestone.update_status(new_status)
-                self.update_status()
-                return
+
+    def print_milestones(self):
+        if not self.milestones:
+            print("This project has no milestones.")
+            return
+        for index, milestone in enumerate(self.milestones, start=1):
+            print(f"{index}) {milestone}")
+
+
+    def assign_freelancer(self, freelancer):
+        self.freelancer = freelancer
+        self.status = "Assigned"

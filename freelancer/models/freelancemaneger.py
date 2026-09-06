@@ -1,7 +1,10 @@
 import json
-from .user import Client, Freelancer
+from .user import Client
+from .client import Client
+from .freelancer import Freelancer
 from .project import Project
 from .invoice import Invoice
+from ..utils import helper_functions
 
 
 class FreelanceManager:
@@ -16,11 +19,7 @@ class FreelanceManager:
         print("3. Register as Freelancer")
         print("---------------------------------")
 
-        choice = int(input("Enter your choice (1-3): "))
-
-        while choice not in range(1, 4):
-            print("Invalid choice. Please try again.")
-            choice = int(input("Enter your choice (1-3): "))
+        choice = helper_functions.get_menu_choice(1,3)
 
         if choice == 1:
             user_id = input("Enter your user ID: ")
@@ -78,13 +77,21 @@ class FreelanceManager:
 
         if user_id not in self.users:
             print("User not found.")
-        else:
-            user = self.users[user_id]
+            return
+
+        user = self.users[user_id]
 
         if user.check_password(password):
             print("Login success")
         else:
             print("Wrong password.")
+            return
+
+        if isinstance(user, Client):
+            self.client_menu(user)
+
+        # if isinstance(user, Freelancer):
+        #  self.freelancer_menu(user)
 
     def register_client(self, name, phone_num, password):
 
@@ -120,3 +127,42 @@ class FreelanceManager:
         self.append_user(freelancer)
 
         print("registered successfully.")
+
+    def client_menu(self, current_client):
+
+        print("1. Create project")
+        print("2. Assign project")
+        print("3. Update milestone")
+        print("4. Generate invoice")
+        print("5. Logout")
+
+        choice = helper_functions.get_menu_choice(1,5)
+
+        if choice == 1:
+            pass
+
+        elif choice == 2:
+            pass
+
+        elif choice == 3:
+            print("Enter the project ID:")
+            project_id = input()
+            current_project = helper_functions.find_by_id(current_client.projects_created, project_id)
+            if current_project is None:
+                print("Project ID not found.")
+
+            else:
+                current_project.print_milestones()
+
+                milestone_choice = helper_functions.get_menu_choice(1,len(current_project.milestones),"Choose milestone to update")
+
+                current_milestone = current_project.milestones[milestone_choice - 1]
+                new_status = helper_functions.get_new_milestone_status()
+                current_milestone.update_status(new_status)
+                current_project.update_project_status()
+
+
+        elif choice == 4:
+            pass
+        elif choice == 5:
+            pass
