@@ -141,11 +141,30 @@ class FreelanceManager:
             budget = validators.get_valid_amount("Enter the project budget: ")
             deadline = validators.get_valid_deadline("Enter the project deadline in YYYY-MM-DD format: ")
             milestones = helper_functions.get_milestones()
-            new_project = Project(project_id, title, budget, current_client, deadline,milestones)
+            new_project = Project(project_id, title, budget, current_client, deadline, milestones)
             current_client.add_project(new_project)
 
         elif choice == 2:
-            pass
+            while True:
+                project_id = input("Enter project ID: ")
+                project = current_client.get_project_by_id(project_id)
+                if project is None:
+                    print("Project not found")
+                elif project.status != "Open":
+                    print("Project already assigned")
+                else:
+                    break
+            while True:
+                freelancer_id = input("Enter freelancer ID: ")
+                freelancer = helper_functions.find_by_id(self.users, freelancer_id)
+                if freelancer is None:
+                    print("Freelancer not found")
+                else:
+                    freelancer.assign_project(project)
+                    project.assign_freelancer(freelancer)
+                    print(f"\n✅ Success! Project '{project.title}' assigned to {freelancer.name}.")
+                    break
+
 
         elif choice == 3:
             print("Enter the project ID:")
@@ -170,4 +189,5 @@ class FreelanceManager:
         elif choice == 4:
             pass
         elif choice == 5:
+            # I want to return to log in/regester menu
             pass

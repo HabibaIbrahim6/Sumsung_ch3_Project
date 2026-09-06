@@ -25,8 +25,6 @@ class Freelancer(User):
 
         self.assigned_projects.append(project)
 
-        print("Project assigned successfully to ", self.name)
-
 
     def to_dict(self):
         data = super().to_dict()

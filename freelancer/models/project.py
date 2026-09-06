@@ -7,7 +7,7 @@ class Project:
         self.freelancer = None
         self.status = "Open"
         self.deadline = deadline
-        self.milestones = []
+        self.milestones = milestones
 
     def __str__(self):
         return f"Project ID: {self.id} , Title: {self.title} , Status: {self.status}"

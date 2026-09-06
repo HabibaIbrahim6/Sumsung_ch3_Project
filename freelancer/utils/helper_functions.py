@@ -91,4 +91,4 @@ def print_client_menu():
     print("2. Assign project")
     print("3. Update milestone")
     print("4. Generate invoice")
-    print("5. Logout")
+    print("5. Log out")
