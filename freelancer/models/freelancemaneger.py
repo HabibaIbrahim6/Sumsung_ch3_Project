@@ -81,7 +81,7 @@ class FreelanceManager:
 
         user = self.users[user_id]
 
-        if user.check_password(password):
+        if validators.check_password(password):
             print("Login success")
         else:
             print("Wrong password.")
@@ -90,8 +90,9 @@ class FreelanceManager:
         if isinstance(user, Client):
             self.client_menu(user)
 
-        # if isinstance(user, Freelancer):
-        #  self.freelancer_menu(user)
+        if isinstance(user, Freelancer):
+            self.freelancer_menu(user)
+            pass
 
     def register_client(self, name, phone_num, password):
 
@@ -128,13 +129,13 @@ class FreelanceManager:
 
         print("registered successfully.")
 
-    def client_menu(self, current_client):
+    def client_menu(self, current_client: Client):
 
         helper_functions.print_client_menu()
 
         choice = helper_functions.get_menu_choice(1, 5)
 
-        if choice == 1:
+        if choice == 1: # create a project
 
             project_id = helper_functions.generate_id("P", len(current_client.projects_created) + 1)
             title = validators.get_valid_title("Enter project title: ")
@@ -144,7 +145,7 @@ class FreelanceManager:
             new_project = Project(project_id, title, budget, current_client, deadline, milestones)
             current_client.add_project(new_project)
 
-        elif choice == 2:
+        elif choice == 2: # assign a project to a freelancer
             while True:
                 project_id = input("Enter project ID: ")
                 project = current_client.get_project_by_id(project_id)
@@ -156,13 +157,13 @@ class FreelanceManager:
                     break
             while True:
                 freelancer_id = input("Enter freelancer ID: ")
-                freelancer = helper_functions.find_by_id(self.users, freelancer_id)
+                freelancer = helper_functions.find_freelancer(self.users, freelancer_id)
                 if freelancer is None:
                     print("Freelancer not found")
                 else:
                     freelancer.assign_project(project)
                     project.assign_freelancer(freelancer)
-                    print(f"\n✅ Success! Project '{project.title}' assigned to {freelancer.name}.")
+                    print(f"Project '{project.title}' assigned to {freelancer.name}.")
                     break
 
 
