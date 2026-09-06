@@ -1,5 +1,5 @@
 class Project:
-    def __init__(self, project_id, title, budget, client, deadline):
+    def __init__(self,project_id, title, budget, client, deadline):
         self.id = project_id
         self.title = title
         self.budget = budget

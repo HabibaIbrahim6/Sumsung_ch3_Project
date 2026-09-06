@@ -19,7 +19,7 @@ class FreelanceManager:
         print("3. Register as Freelancer")
         print("---------------------------------")
 
-        choice = helper_functions.get_menu_choice(1,3)
+        choice = helper_functions.get_menu_choice(1, 3)
 
         if choice == 1:
             user_id = input("Enter your user ID: ")
@@ -95,7 +95,7 @@ class FreelanceManager:
 
     def register_client(self, name, phone_num, password):
 
-        user_id = f"C{len(self.users) + 1}"
+        user_id = helper_functions.generate_id("C", len(self.users) + 1)
 
         client = Client(
             user_id,
@@ -130,16 +130,13 @@ class FreelanceManager:
 
     def client_menu(self, current_client):
 
-        print("1. Create project")
-        print("2. Assign project")
-        print("3. Update milestone")
-        print("4. Generate invoice")
-        print("5. Logout")
+        helper_functions.print_client_menu()
 
-        choice = helper_functions.get_menu_choice(1,5)
+        choice = helper_functions.get_menu_choice(1, 5)
 
         if choice == 1:
-            pass
+            project_id = helper_functions.generate_id("P", len(current_client.projects_created) + 1)
+            new_project = Project(project_id, "title", "budget", "client", 'deadline')
 
         elif choice == 2:
             pass
@@ -154,7 +151,8 @@ class FreelanceManager:
             else:
                 current_project.print_milestones()
 
-                milestone_choice = helper_functions.get_menu_choice(1,len(current_project.milestones),"Choose milestone to update")
+                milestone_choice = helper_functions.get_menu_choice(1, len(current_project.milestones),
+                                                                    "Choose milestone to update")
 
                 current_milestone = current_project.milestones[milestone_choice - 1]
                 new_status = helper_functions.get_new_milestone_status()

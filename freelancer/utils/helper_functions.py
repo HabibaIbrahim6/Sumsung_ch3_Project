@@ -33,7 +33,6 @@ def get_milestone_choice(minimum , maximum):
 
         print("Invalid choice. Please try again.")
 
-
 def get_menu_choice(minimum , maximum, message="Enter your choice "):
     while True:
         try:
@@ -49,3 +48,17 @@ def get_menu_choice(minimum , maximum, message="Enter your choice "):
 
         print("Invalid choice, Try again")
 
+
+def generate_id(prefix,counter):
+    return f"{prefix}{counter:03}"
+
+
+
+#=================== FOR CLIENT MENU ===================
+
+def print_client_menu():
+    print("1. Create project")
+    print("2. Assign project")
+    print("3. Update milestone")
+    print("4. Generate invoice")
+    print("5. Logout")
