@@ -3,13 +3,14 @@ from ..models.project import Project
 from ..models.client import Client
 from ..utils import validators as val
 from ..utils import helper_functions
-
-
+from ..models.freelancemaneger import FreelanceManager
+from ..models.freelancer import Freelancer 
 class ClientMenu:
 
-    def __init__(self, client, manager):
+    def __init__(self, client: Client, manager: FreelanceManager, freelancer: Freelancer):
         self.client = client
         self.manager = manager
+        self.freelancer = freelancer
 
 
     def show_menu(self):
@@ -193,26 +194,18 @@ class ClientMenu:
             "Enter your message: "
         ).strip()
 
-        try:
+        request = {"client":self.client,
+                        "project":project,
+                        "freelancer_id":freelancer_id,
+                        "message":message,
+                        "status": "pending"
+                        }
+            
+        self.freelancer.add_request(request)
+        self.client.add_request(request)
+        print("Project request sent successfully.")
 
-            request = self.manager.send_project_request(
-                client=self.client,
-                project=project,
-                freelancer_id=freelancer_id,
-                message=message
-            )
-
-            self.client.add_request(request)
-
-            print("Project request sent successfully.")
-
-        except (ValueError, TypeError) as error:
-
-            print(f"Error: {error}")
-
-   
     def view_requests(self):
-
         self.client.view_requests()
 
 

@@ -86,9 +86,6 @@ class Client(User):
 
     
     def add_request(self, request):
-        """
-        Add a project request sent by the client.
-        """
 
         if request in self.sent_requests:
             raise ValueError("This request already exists.")

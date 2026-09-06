@@ -6,6 +6,7 @@ class Freelancer(User):
     def __init__(self, user_id, name, phone_num, password, skills):
         super().__init__(user_id, name, phone_num, password, "Freelancer")
         self.skills = skills
+        self.received_requests = []
         self.assigned_projects = []
 
     def display_profile(self):
@@ -39,3 +40,14 @@ class Freelancer(User):
         )
         obj.assigned_projects = user_data["assigned_projects"]
         return obj
+    
+    def add_request(self, request):
+    
+            if request in self.received_requests:
+                raise ValueError("This request already exists.")
+    
+            self.received_requests.append(request)
+    
+            print("Project request added successfully.")
+    
+            return request
