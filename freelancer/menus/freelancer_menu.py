@@ -98,8 +98,7 @@ class FreelancerMenu:
 
         current_milestone = project.milestones[milestone_choice - 1]
 
-        print(f"\nCurrent status: "
-              f"{current_milestone.status}")
+        print(f"Current status:{current_milestone.status}")
 
         new_status = (helper_functions.get_new_milestone_status())
 
@@ -118,66 +117,37 @@ class FreelancerMenu:
         pending_requests = (self.freelancer.get_pending_requests())
 
         if not pending_requests:
-
             print("No pending requests.")
             return
 
         print("========== PROJECT REQUESTS ==========")
 
         for request in pending_requests:
-
             client = request.get("client")
             project = request.get("project")
 
-            print(
-                f"\nClient: {client.name}"
-            )
+            print(f"Client: {client.name}")
 
-            print(
-                f"Project: {project.title}"
-            )
+            print(f"Project: {project.title}")
 
-            print(
-                f"Message: "
-                f"{request.get('message', '')}"
-            )
+            print(f"Message: {request.get('message', '')}")
 
-            decision = input(
-                "\nAccept or reject? "
-            ).strip().lower()
+            decision = input("\nAccept or reject? ").strip().lower()
 
-            while decision not in [
-                "accept",
-                "reject"
-            ]:
+            while decision not in ["accept","reject"]:
 
-                decision = input(
-                    "Please enter accept or reject: "
-                ).strip().lower()
+                decision = input("Please enter accept or reject: ").strip().lower()
 
             if decision == "accept":
-
-                success = (
-                    self.freelancer
-                    .assign_project(project)
-                )
+                success = (self.freelancer.assign_project(project))
 
                 if success:
-
                     request["status"] = "accepted"
-
-                    print(
-                        "Request accepted "
-                        "and project assigned."
-                    )
+                    print("Request accepted and project assigned")
 
             else:
-
                 request["status"] = "rejected"
-
-                print(
-                    "Request rejected."
-                )
+                print("Request rejected.")
 
             self.manager.save_users()
 
@@ -190,18 +160,11 @@ class FreelancerMenu:
   
     def financial_report(self):
 
-        print(
-            "========== FINANCIAL REPORT =========="
-        )
+        print("========== FINANCIAL REPORT ==========")
 
-        invoiced_projects = [
-            project
-            for project in self.freelancer.assigned_projects
-            if project.invoice is not None
-        ]
+        invoiced_projects = [ project for project in self.freelancer.assigned_projects if project.invoice is not None ]
 
         if not invoiced_projects:
-
             print("No invoices yet.")
             return
 
@@ -210,85 +173,38 @@ class FreelancerMenu:
         total_earnings = 0
 
         for project in invoiced_projects:
-
             invoice = project.invoice
+            print(f"\nProject: {project.title}")
 
-            print(
-                f"\nProject: {project.title}"
-            )
+            print(f"Invoice ID:{invoice.invoice_id}")
 
-            print(
-                f"Invoice ID: "
-                f"{invoice.invoice_id}"
-            )
+            print(f"Status: {invoice.status}")
 
-            print(
-                f"Status: "
-                f"{invoice.status}"
-            )
+            print(f"Total Amount: ${invoice.amount:.2f}")
 
-            print(
-                f"Total Amount: "
-                f"${invoice.amount:.2f}"
-            )
+            print(f"Platform Commission:${invoice.platform_commission:.2f}")
 
-            print(
-                f"Platform Commission: "
-                f"${invoice.platform_commission:.2f}"
-            )
-
-            print(
-                f"Net Earnings: "
-                f"${invoice.freelancer_earnings:.2f}"
-            )
+            print(f"Net Earnings: ${invoice.freelancer_earnings:.2f}")
 
             total_amount += invoice.amount
-            total_commission += (
-                invoice.platform_commission
-            )
-            total_earnings += (
-                invoice.freelancer_earnings
-            )
+            total_commission += (invoice.platform_commission)
+            total_earnings += (invoice.freelancer_earnings)
 
-        print(
-            "\n========== SUMMARY =========="
-        )
+        print("========== SUMMARY ==========")
 
-        print(
-            f"Total Projects: "
-            f"{len(invoiced_projects)}"
-        )
+        print(f"Total Projects: {len(invoiced_projects)}")
 
-        print(
-            f"Total Amount Invoiced: "
-            f"${total_amount:.2f}"
-        )
+        print(f"Total Amount Invoiced: ${total_amount:.2f}")
 
-        print(
-            f"Total Commission Deducted: "
-            f"${total_commission:.2f}"
-        )
+        print(f"Total Commission Deducted: ${total_commission:.2f}")
 
-        print(
-            f"Total Net Earnings: "
-            f"${total_earnings:.2f}"
-        )
+        print(f"Total Net Earnings: ${total_earnings:.2f}")
 
    
     def view_profile(self):
-
-        print(
-            "\n========== PROFILE =========="
-        )
-
+        print("\n========== PROFILE ==========")
         self.freelancer.display_profile()
 
     def edit_profile(self):
-
-        print(
-            "\n========== EDIT PROFILE =========="
-        )
-
-        print(
-            "Edit profile feature is not implemented yet."
-        )
+        print("========== EDIT PROFILE ==========")
+        print("Edit profile feature is not implemented yet.")

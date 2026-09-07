@@ -19,43 +19,32 @@ class FreelanceManager:
     def load_users(self):
         try:
             with open("data.jsonl", "r", encoding="utf-8") as file:
-
                 for line in file:
                     line = line.strip()
-
                     if not line:
                         continue
 
                     try:
                         user_data = json.loads(line)
                     except json.JSONDecodeError:
-                        print("Skipping invalid JSON line.")
+                        print("Invalid JSON line, skipping...")
                         continue
 
                     if "user_id" not in user_data:
-                        print("Skipping user without user_id.")
+                        print("User ID not found, skipping...")
                         continue
 
                     user_id = str(user_data["user_id"])
                     role = user_data.get("role")
 
                     if role == "Client":
-                        user = Client.from_dict(
-                            user_id,
-                            user_data
-                        )
+                        user = Client.from_dict(user_id, user_data)
 
                     elif role == "Freelancer":
-                        user = Freelancer.from_dict(
-                            user_id,
-                            user_data
-                        )
+                        user = Freelancer.from_dict(user_id, user_data)
 
                     else:
-                        print(
-                            f"Skipping user {user_id}: "
-                            f"unknown role."
-                        )
+                        print(f"Unknown role for user {user_id}, skipping...")
                         continue
 
                     self.users[user_id] = user
@@ -63,38 +52,25 @@ class FreelanceManager:
             self.rebuild_relationships()
 
         except FileNotFoundError:
-            print(
-                "No data.jsonl file found. "
-                "Starting with empty system."
-            )
+            print("data.jsonl not found. Starting with empty system.")
 
     def rebuild_relationships(self):
+
         self.projects = []
-
         for user in self.users.values():
-
             if isinstance(user, Client):
-
                 for project in user.projects_created:
-
                     if project not in self.projects:
                         self.projects.append(project)
 
         for user in self.users.values():
-
             if not isinstance(user, Freelancer):
                 continue
 
-            project_ids = getattr(
-                user,
-                "_assigned_project_ids",
-                []
-            )
-
+            project_ids = getattr(user,"_assigned_project_ids",[])
             user.assigned_projects = []
 
             for project_id in project_ids:
-
                 project = self.get_project_by_id(project_id)
 
                 if project is None:
@@ -110,15 +86,11 @@ class FreelanceManager:
             if not isinstance(user, Freelancer):
                 continue
 
-            request_data_list = getattr(
-                user,
-                "_received_request_data",
-                []
-            )
+            requests = getattr(user,"_received_request_data",[])
 
             user.received_requests = []
 
-            for request_data in request_data_list:
+            for request_data in requests:
 
                 project_id = request_data.get("project_id")
                 client_id = request_data.get("client_id")
@@ -132,14 +104,8 @@ class FreelanceManager:
                 request = {
                     "project": project,
                     "client": client,
-                    "message": request_data.get(
-                        "message",
-                        ""
-                    ),
-                    "status": request_data.get(
-                        "status",
-                        "pending"
-                    )
+                    "message": request_data.get("message", ""),
+                    "status": request_data.get("status", "pending")
                 }
 
                 user.received_requests.append(request)
@@ -167,17 +133,17 @@ class FreelanceManager:
             for user in self.users.values():
 
                 user_data = user.to_dict()
+
+                # Check that the data can be converted to JSON
                 json.dumps(user_data)
+
                 data.append(user_data)
 
         except Exception as error:
 
             print("\nERROR: Could not save data.")
             print(f"Reason: {error}")
-            print(
-                "The existing data.jsonl file "
-                "was NOT changed."
-            )
+            print("The existing data.jsonl file was NOT changed.")
 
             return False
 
@@ -190,10 +156,8 @@ class FreelanceManager:
             ) as file:
 
                 for user_data in data:
-
                     file.write(
-                        json.dumps(user_data)
-                        + "\n"
+                        json.dumps(user_data) + "\n"
                     )
 
             return True
@@ -262,9 +226,7 @@ class FreelanceManager:
 
         self.users[user_id] = client
 
-        success = self.save_users()
-
-        if not success:
+        if not self.save_users():
 
             del self.users[user_id]
 
@@ -275,10 +237,8 @@ class FreelanceManager:
 
             return None
 
-        print(
-            "\nRegistered successfully."
-            f"\nYour User ID is: {user_id}"
-        )
+        print("\nRegistered successfully.")
+        print(f"Your User ID is: {user_id}")
 
         return client
 
@@ -288,7 +248,7 @@ class FreelanceManager:
         email,
         password,
         skills
-       ):
+    ):
 
         user_id = helper_functions.generate_id(
             "F",
@@ -305,9 +265,7 @@ class FreelanceManager:
 
         self.users[user_id] = freelancer
 
-        success = self.save_users()
-
-        if not success:
+        if not self.save_users():
 
             del self.users[user_id]
 
@@ -318,35 +276,37 @@ class FreelanceManager:
 
             return None
 
-        print(
-            "\nRegistered successfully."
-            f"\nYour User ID is: {user_id}"
-        )
+        print("\nRegistered successfully.")
+        print(f"Your User ID is: {user_id}")
 
         return freelancer
 
     def add_project(self, project):
 
         if not isinstance(project, Project):
-            raise TypeError(
-                "project must be a Project object."
-            )
+            raise TypeError("project must be a Project object.")
 
         if project not in self.projects:
             self.projects.append(project)
 
     def get_freelancers(self):
 
-        return [
-            user
-            for user in self.users.values()
-            if isinstance(user, Freelancer)
-        ]
+        freelancers = []
+
+        for user in self.users.values():
+
+            if isinstance(user, Freelancer):
+                freelancers.append(user)
+
+        return freelancers
 
     def get_clients(self):
 
-        return [
-            user
-            for user in self.users.values()
-            if isinstance(user, Client)
-        ]
+        clients = []
+
+        for user in self.users.values():
+
+            if isinstance(user, Client):
+                clients.append(user)
+
+        return clients
