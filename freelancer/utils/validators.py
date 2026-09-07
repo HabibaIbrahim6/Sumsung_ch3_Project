@@ -1,7 +1,7 @@
-import re # Regular expressions module for pattern matching
+import re 
 from datetime import datetime
 
-# ---------- Regex Patterns ----------
+#  Regex Patterns 
 
 EMAIL_PATTERN = re.compile(r"^[\w.]+@(gmail|yahoo)\.com$")
 PASSWORD_PATTERN = re.compile(r"^(?=.*\d)(?=.*[!@#$%^&*]).{9,}$")
@@ -9,12 +9,12 @@ DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 PHONE_PATTERN = re.compile(r"01[0125]\d{8}")
 
 
-# ---------- Validation Functions ----------
-# check if the email is valid
+#  Validation Functions 
+
 def is_valid_email(email):
     return bool(EMAIL_PATTERN.fullmatch(email))
 
-# check if the password is valid
+
 def is_valid_password(password):
     return bool(PASSWORD_PATTERN.fullmatch(password))
 
@@ -29,7 +29,7 @@ def is_valid_phone(phone):
 
 
 
-# check if the date is valid
+
 
 def is_valid_date(date):
     if not DATE_PATTERN.fullmatch(date):

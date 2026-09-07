@@ -8,20 +8,13 @@ if TYPE_CHECKING:
 
 
 class FreelancerMenu:
-
-    def __init__(
-        self,
-        freelancer: Freelancer,
-        manager: "FreelanceManager"
-    ):
+    def __init__(self,freelancer: Freelancer, manager: "FreelanceManager"):
         self.freelancer = freelancer
         self.manager = manager
 
   
     def show_menu(self):
-
         while True:
-
             print("\n=================================")
             print("        FREELANCER MENU")
             print("=================================")
@@ -35,10 +28,7 @@ class FreelancerMenu:
             print("8. Logout")
             print("=================================")
 
-            choice = helper_functions.get_menu_choice(
-                1,
-                8
-            )
+            choice = helper_functions.get_menu_choice(1, 8)
 
             if choice == 1:
                 self.view_assigned_projects()
@@ -66,117 +56,73 @@ class FreelancerMenu:
                 print("Logged out successfully.")
                 break
 
-   
+
     def view_assigned_projects(self):
-
         print("\n========== ASSIGNED PROJECTS ==========")
-
+# validate here
         if not self.freelancer.assigned_projects:
-
             print("No assigned projects.")
             return
 
         for project in self.freelancer.assigned_projects:
+            print(f"Project ID: {project.id}")
 
-            print(
-                f"Project ID: {project.id}"
-            )
+            print(f"Title: {project.title}")
 
-            print(
-                f"Title: {project.title}"
-            )
-
-            print(
-                f"Status: {project.status}"
-            )
+            print(f"Status: {project.status}")
 
             print("----------------------------------")
 
   
     def update_milestone_status(self):
-
         if not self.freelancer.assigned_projects:
-
             print("You have no assigned projects.")
             return
 
-        project_id = input(
-            "Enter project ID: "
-        ).strip()
+        project_id = input("Enter project ID: ").strip()
 
-        project = self.freelancer.get_project_by_id(
-            project_id
-        )
+        project = self.freelancer.get_project_by_id(project_id)
 
         if project is None:
-
             print("Project ID not found.")
             return
 
         if not project.milestones:
-
             print("This project has no milestones.")
             return
 
-        print(
-            f"\nProject: {project.title}"
-        )
-
+        print(f"Project: {project.title}")
         project.print_milestones()
 
-        milestone_choice = helper_functions.get_menu_choice(
-            1,
-            len(project.milestones),
-            "Choose milestone to update "
-        )
+        milestone_choice = helper_functions.get_menu_choice(1,len(project.milestones),"Choose milestone to update ")
 
-        current_milestone = project.milestones[
-            milestone_choice - 1
-        ]
+        current_milestone = project.milestones[milestone_choice - 1]
 
-        print(
-            f"\nCurrent status: "
-            f"{current_milestone.status}"
-        )
+        print(f"\nCurrent status: "
+              f"{current_milestone.status}")
 
-        new_status = (
-            helper_functions
-            .get_new_milestone_status()
-        )
+        new_status = (helper_functions.get_new_milestone_status())
 
-        current_milestone.update_status(
-            new_status
-        )
+        current_milestone.update_status(new_status)
 
-        # Update project status
         project.update_project_status()
 
-        # Save changes
         self.manager.save_users()
 
-        print(
-            "\nMilestone updated successfully."
-        )
+        print("Milestone updated successfully.")
 
-        print(
-            f"Project status: {project.status}"
-        )
+        print(f"Project status: {project.status}")
 
   
     def view_and_respond_to_requests(self):
-
-        pending_requests = (
-            self.freelancer.get_pending_requests()
-        )
+        pending_requests = (self.freelancer.get_pending_requests())
 
         if not pending_requests:
 
             print("No pending requests.")
             return
 
-        print(
-            "\n========== PROJECT REQUESTS =========="
-        )
+        print("========== PROJECT REQUESTS ==========")
 
         for request in pending_requests:
 
@@ -245,7 +191,7 @@ class FreelancerMenu:
     def financial_report(self):
 
         print(
-            "\n========== FINANCIAL REPORT =========="
+            "========== FINANCIAL REPORT =========="
         )
 
         invoiced_projects = [
