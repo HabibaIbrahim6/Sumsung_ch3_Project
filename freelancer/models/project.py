@@ -1,7 +1,7 @@
 from ..utils.helper_functions import  print_menu
-
+from ..models.invoice import Invoice
 class Project:
-    def __init__(self,project_id, title,description, budget, client, deadline, milestones):
+    def __init__(self,project_id, title, budget, client, deadline, milestones):
         self.id = project_id
         self.title = title
         self.budget = budget
@@ -35,3 +35,6 @@ class Project:
     def assign_freelancer(self, freelancer):
         self.freelancer = freelancer
         self.status = "Assigned"
+
+    def add_invoice(self, invoice):
+        self.invoice = invoice

@@ -2,17 +2,16 @@
 from ..utils import validators as val
 from ..utils import helper_functions
 
-from .AminMenu import AdminMenu
+from .AdminMenu import AdminMenu
 from .client_menu import ClientMenu
 from .freelancer_menu import FreelancerMenu
-
+from ..models.freelancemaneger import FreelanceManager
 
 class MainMenu:
 
-    def __init__(self, manager):
+    def __init__(self, manager:FreelanceManager):
         self.manager = manager
 
-   
     def show_menu(self):
         """
         Display the main menu of the system.
@@ -32,67 +31,35 @@ class MainMenu:
             choice = helper_functions.get_menu_choice(1, 4)
 
             if choice == 1:
-                self.login()
+                self.login_page()
 
             elif choice == 2:
-                self.register_client()
+                self.register_client_page()
 
             elif choice == 3:
-                self.register_freelancer()
+                self.register_freelancer_page()
 
             elif choice == 4:
                 print("\nThank you for using SIC Freelance Project Hub!")
                 break
 
-    def login(self):
-        """
-        Handle user login and open the menu
-        according to the user's role.
-        """
+    def login_page(self):
 
-        print("\n========== LOGIN ==========")
+        print("========== LOGIN ==========")
 
-        user_id = input("Enter your user ID: ").strip()
-        password = input("Enter your password: ").strip()
-
-        if not user_id or not password:
+        while not user_id or not password:
+            user_id = input("Enter your user ID: ").strip()
+            password = input("Enter your password: ").strip()
             print("User ID and password cannot be empty.")
-            return
 
-        # Manager checks the credentials
         user = self.manager.login(user_id, password)
-
-        # Login failed
-        if user is None:
+        if not user:    
+            print("Login failed. Please check your credentials.")
             return
+        
+    def register_client_page(self):
 
-        print(f"\nWelcome, {user.name}!")
-
-       
-        if user.role == "Client":
-
-            client_menu = ClientMenu(
-                user,
-                self.manager
-            )
-
-            client_menu.show_menu()
-
-        elif user.role == "Freelancer":
-
-           pass
-
-        else:
-
-            print("Unknown user role.")
-
-    
-    def register_client(self):
-        """
-        Register a new client after validating the input.
-        """
-
-        print("\n====== REGISTER AS CLIENT ======")
+        print("====== REGISTER AS CLIENT ======")
 
         while True:
 
@@ -136,30 +103,15 @@ class MainMenu:
                 "\n- contain at least one special character"
             )
 
-       
-        try:
-
             self.manager.register_client(
                 name,
                 phone_num,
                 password
             )
-
-        except ValueError as error:
-
-            print(f"Registration failed: {error}")
-
-        except Exception as error:
-
-            print(f"Unexpected error: {error}")
-
    
-    def register_freelancer(self):
-        """
-        Register a new freelancer after validating the input.
-        """
+    def register_freelancer_page(self):
 
-        print("\n====== REGISTER AS FREELANCER ======")
+        print("====== REGISTER AS FREELANCER ======")
 
         
         while True:
@@ -222,19 +174,9 @@ class MainMenu:
 
             print("Please enter at least one skill.")
 
-        try:
-
             self.manager.register_freelancer(
                 name,
                 phone_num,
                 password,
                 skills
             )
-
-        except ValueError as error:
-
-            print(f"Registration failed: {error}")
-
-        except Exception as error:
-
-            print(f"Unexpected error: {error}")

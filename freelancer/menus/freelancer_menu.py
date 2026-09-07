@@ -40,7 +40,7 @@ class FreelancerMenu:
                 self.view_and_respond_to_requests()
 
             elif choice == 4:
-                self.view_messages()
+                self.view_messages() #pass 
 
             elif choice == 5:
                 self.financial_report()

@@ -7,10 +7,11 @@ from ..models.freelancemaneger import FreelanceManager
 from ..models.freelancer import Freelancer 
 class ClientMenu:
 
-    def __init__(self, client: Client, manager: FreelanceManager, freelancer: Freelancer):
+    def __init__(self, client: Client, manager: FreelanceManager, freelancer: Freelancer,invoice: Invoice):
         self.client = client
         self.manager = manager
         self.freelancer = freelancer
+        self.invoice = invoice
 
 
     def show_menu(self):
@@ -74,7 +75,6 @@ class ClientMenu:
 
         print("\n========== CREATE PROJECT ==========")
 
-        # Generate ID automatically
         project_id = helper_functions.generate_id(
             "P",
             len(self.manager.projects) + 1
@@ -82,19 +82,7 @@ class ClientMenu:
 
         print(f"Generated Project ID: {project_id}")
 
-
         title = val.get_valid_title("Enter project title: ")
-
-        while True:
-
-            description = input(
-                "Enter project description: "
-            ).strip()
-
-            if description:
-                break
-
-            print("Description cannot be empty.")
 
         budget = val.get_valid_amount("Enter the project budget: ")
 
@@ -102,30 +90,23 @@ class ClientMenu:
 
         milestones = helper_functions.get_milestones()
 
-        try:
+        project = Project(
+            project_id,
+            title,
+            budget,
+            self.client,
+            deadline,
+            milestones
+        )
 
-            project = Project(
-                project_id,
-                title,
-                description,
-                budget,
-                self.client,
-                deadline,
-                milestones
-            )
+        invoice = Invoice(helper_functions.generate_id("INV", 1), project_id,budget)
+        project.add_invoice(invoice)    
+        self.client.add_project(project)
 
+        print("\nProject created successfully")
+        print(f"Project ID: {project_id}")
 
-            self.client.create_project(project)
-            self.manager.save_users()
-
-            self.manager.projects.append(project)
-
-            print("\nProject created successfully!")
-            print(f"Project ID: {project_id}")
-
-        except (ValueError, TypeError, AttributeError) as error:
-
-            print(f"Error: {error}")
+        
 
 
     def view_projects(self):
@@ -137,14 +118,34 @@ class ClientMenu:
 
         print("\n========== FREELANCERS ==========")
 
-        freelancers = [
-            user
-            for user in self.manager.users.values()
-            if user.role == "Freelancer"
-        ]
+        print("1. all freelancers")
+        print("2. freelancers by skill")
+        print("3. freelancers by project count done")
+        
+        choice = helper_functions.get_menu_choice(1, 3)
+        if choice == 1:
+            freelancers = [
+                user
+                for user in self.manager.users.values()
+                if user.role == "Freelancer"
+            ]
+        elif choice == 2:
+            skill = input("Enter skill to search for: ").strip()
+            freelancers = [
+                user
+                for user in self.manager.users.values()
+                if user.role == "Freelancer" and skill in getattr(user, "skills", [])
+            ]
+        elif choice == 3:
+            freelancers = [
+                user
+                for user in self.manager.users.values()
+                if user.role == "Freelancer"
+            ]
+            freelancers.sort(key=lambda x: len(x.projects_done), reverse=True)
 
         if not freelancers:
-            print("No freelancers available.")
+            print("No freelancers found")
             return
 
         for freelancer in freelancers:
@@ -152,12 +153,13 @@ class ClientMenu:
             skills = getattr(freelancer, "skills", [])
 
             if isinstance(skills, list):
-                skills = ", ".join(skills)
+                skills = "- ".join(skills)
 
             print(
-                f"ID: {freelancer.id} | "
-                f"Name: {freelancer.name} | "
+                f"ID: {freelancer.id}  "
+                f"Name: {freelancer.name} "
                 f"Skills: {skills}"
+                "---------"
             )
 
 

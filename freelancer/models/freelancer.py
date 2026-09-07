@@ -8,7 +8,8 @@ class Freelancer(User):
         self.skills = skills
         self.received_requests = []
         self.assigned_projects = []
-
+        self.projects_done = [project for project in self.assigned_projects if project.status == "Completed"]
+        
     def display_profile(self):
         super().display_profile()
 
