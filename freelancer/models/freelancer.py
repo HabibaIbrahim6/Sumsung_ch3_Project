@@ -23,6 +23,18 @@ class Freelancer(User):
     def assign_project(self, project):
         self.assigned_projects.append(project)
 
+    def get_project_by_id(self, project_id) -> "Project | None":
+        """
+        Find a project using its ID.
+        """
+
+        for project in self.assigned_projects:
+
+            if project.id == project_id:
+                return project
+
+        return None
+
 
     def to_dict(self):
         data = super().to_dict()

@@ -2,12 +2,12 @@ from ..models.project import Project
 from ..models.freelancer import Freelancer
 from ..utils import validators as val
 from ..utils import helper_functions
-from ..models.freelancemaneger import FreelancerManager
+from ..models.freelancemaneger import FreelanceManager
 
 
 class FreelancerMenu:
 
-    def __init__(self, freelancer:Freelancer, manager:FreelancerManager):
+    def __init__(self, freelancer:Freelancer, manager:FreelanceManager):
         self.freelancer = freelancer
         self.manager = manager
 
