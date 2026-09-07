@@ -22,9 +22,7 @@ class Client(User):
         # Messages received from freelancers
         self.messages = []
 
-    # =========================================================
-    # PROJECT METHODS
-    # =========================================================
+   
 
     def create_project(self, project):
         """
@@ -86,10 +84,7 @@ class Client(User):
 
         return True
 
-    # =========================================================
-    # REQUEST METHODS
-    # =========================================================
-
+    
     def add_request(self, request):
         """
         Add a project request sent by the client.
@@ -137,10 +132,7 @@ class Client(User):
         for request in self.sent_requests:
             print(request)
 
-    # =========================================================
-    # MESSAGE METHODS
-    # =========================================================
-
+   
     def add_message(self, message):
         """
         Add a message received by the client.
@@ -173,10 +165,7 @@ class Client(User):
         for message in self.messages:
             print(message)
 
-    # =========================================================
-    # PROFILE
-    # =========================================================
-
+   
     def display_profile(self):
         """
         Display the client's profile information.
@@ -198,10 +187,6 @@ class Client(User):
             f"Messages: "
             f"{len(self.messages)}"
         )
-
-    # =========================================================
-    # JSON METHODS
-    # =========================================================
 
     def to_dict(self):
         """

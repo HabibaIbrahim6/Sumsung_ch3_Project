@@ -64,10 +64,7 @@ class FreelanceManager:
             # It will be created when the first user registers
             return
 
-    # ---------------------------------------------------------
-    # Save User
-    # ---------------------------------------------------------
-
+ 
     def append_user(self, user):
         """
         Save a user to data.jsonl.
@@ -79,10 +76,7 @@ class FreelanceManager:
                 json.dumps(user.to_dict()) + "\n"
             )
 
-    # ---------------------------------------------------------
-    # Login
-    # ---------------------------------------------------------
-
+  
     def login(self, user_id, password):
         """
         Check user credentials and return the logged-in user.
@@ -140,10 +134,7 @@ class FreelanceManager:
 
         return client
 
-    # ---------------------------------------------------------
-    # Register Freelancer
-    # ---------------------------------------------------------
-
+   
     def register_freelancer(
         self,
         name,
@@ -181,10 +172,7 @@ class FreelanceManager:
 
         return freelancer
 
-    # ---------------------------------------------------------
-    # Get Freelancers
-    # ---------------------------------------------------------
-
+   
     def get_freelancers(self):
         """
         Return all registered freelancers.
@@ -196,10 +184,7 @@ class FreelanceManager:
             if isinstance(user, Freelancer)
         ]
 
-    # ---------------------------------------------------------
-    # Get User By ID
-    # ---------------------------------------------------------
-
+   
     def get_user_by_id(self, user_id):
         """
         Find a user by their ID.

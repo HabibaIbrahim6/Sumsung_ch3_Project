@@ -10,9 +10,6 @@ class ClientMenu:
         self.client = client
         self.manager = manager
 
-    # =========================================================
-    # MAIN MENU
-    # =========================================================
 
     def show_menu(self):
 
@@ -62,9 +59,6 @@ class ClientMenu:
                 print("Logged out successfully.")
                 break
 
-    # =========================================================
-    # CREATE PROJECT
-    # =========================================================
 
     def create_project(self):
 
@@ -78,9 +72,6 @@ class ClientMenu:
 
         print(f"Generated Project ID: {project_id}")
 
-        # -----------------------------
-        # Title validation
-        # -----------------------------
 
         while True:
 
@@ -91,9 +82,7 @@ class ClientMenu:
 
             print("Title cannot be empty.")
 
-        # -----------------------------
-        # Description validation
-        # -----------------------------
+   
 
         while True:
 
@@ -106,9 +95,7 @@ class ClientMenu:
 
             print("Description cannot be empty.")
 
-        # -----------------------------
-        # Budget validation
-        # -----------------------------
+
 
         while True:
 
@@ -125,9 +112,6 @@ class ClientMenu:
                 "Please enter a number greater than 0."
             )
 
-        # -----------------------------
-        # Deadline validation
-        # -----------------------------
 
         while True:
 
@@ -143,9 +127,6 @@ class ClientMenu:
                 "Use YYYY-MM-DD format."
             )
 
-        # -----------------------------
-        # Create Project
-        # -----------------------------
 
         try:
 
@@ -171,17 +152,10 @@ class ClientMenu:
 
             print(f"Error: {error}")
 
-    # =========================================================
-    # VIEW PROJECTS
-    # =========================================================
-
     def view_projects(self):
 
         self.client.view_projects()
 
-    # =========================================================
-    # SEARCH FREELANCERS
-    # =========================================================
 
     def search_freelancers(self):
 
@@ -210,9 +184,6 @@ class ClientMenu:
                 f"Skills: {skills}"
             )
 
-    # =========================================================
-    # SEND PROJECT REQUEST
-    # =========================================================
 
     def send_project_request(self):
 
@@ -264,34 +235,21 @@ class ClientMenu:
 
             print(f"Error: {error}")
 
-    # =========================================================
-    # VIEW REQUESTS
-    # =========================================================
-
+   
     def view_requests(self):
 
         self.client.view_requests()
-
-    # =========================================================
-    # VIEW MESSAGES
-    # =========================================================
 
     def view_messages(self):
 
         self.client.view_messages()
 
-    # =========================================================
-    # VIEW PROFILE
-    # =========================================================
-
+ 
     def view_profile(self):
 
         self.client.display_profile()
 
-    # =========================================================
-    # DELETE PROJECT
-    # =========================================================
-
+  
     def delete_project(self):
 
         print("\n========== DELETE PROJECT ==========")

@@ -12,10 +12,7 @@ class MainMenu:
     def __init__(self, manager):
         self.manager = manager
 
-    # =========================================================
-    # Main Menu
-    # =========================================================
-
+   
     def show_menu(self):
         """
         Display the main menu of the system.
@@ -47,10 +44,6 @@ class MainMenu:
                 print("\nThank you for using SIC Freelance Project Hub!")
                 break
 
-    # =========================================================
-    # Login
-    # =========================================================
-
     def login(self):
         """
         Handle user login and open the menu
@@ -75,10 +68,7 @@ class MainMenu:
 
         print(f"\nWelcome, {user.name}!")
 
-        # -----------------------------------------------------
-        # Open the correct menu according to the role
-        # -----------------------------------------------------
-
+       
         if user.role == "Client":
 
             client_menu = ClientMenu(
@@ -96,20 +86,13 @@ class MainMenu:
 
             print("Unknown user role.")
 
-    # =========================================================
-    # Register Client
-    # =========================================================
-
+    
     def register_client(self):
         """
         Register a new client after validating the input.
         """
 
         print("\n====== REGISTER AS CLIENT ======")
-
-        # -----------------------------------------------------
-        # Name
-        # -----------------------------------------------------
 
         while True:
 
@@ -120,10 +103,7 @@ class MainMenu:
 
             print("Name cannot be empty.")
 
-        # -----------------------------------------------------
-        # Phone
-        # -----------------------------------------------------
-
+       
         while True:
 
             phone_num = input(
@@ -138,10 +118,7 @@ class MainMenu:
                 "Please enter exactly 11 digits."
             )
 
-        # -----------------------------------------------------
-        # Password
-        # -----------------------------------------------------
-
+       
         while True:
 
             password = input(
@@ -159,10 +136,7 @@ class MainMenu:
                 "\n- contain at least one special character"
             )
 
-        # -----------------------------------------------------
-        # Register Client
-        # -----------------------------------------------------
-
+       
         try:
 
             self.manager.register_client(
@@ -179,10 +153,7 @@ class MainMenu:
 
             print(f"Unexpected error: {error}")
 
-    # =========================================================
-    # Register Freelancer
-    # =========================================================
-
+   
     def register_freelancer(self):
         """
         Register a new freelancer after validating the input.
@@ -190,10 +161,7 @@ class MainMenu:
 
         print("\n====== REGISTER AS FREELANCER ======")
 
-        # -----------------------------------------------------
-        # Name
-        # -----------------------------------------------------
-
+        
         while True:
 
             name = input("Enter your name: ").strip()
@@ -203,10 +171,7 @@ class MainMenu:
 
             print("Name cannot be empty.")
 
-        # -----------------------------------------------------
-        # Phone
-        # -----------------------------------------------------
-
+       
         while True:
 
             phone_num = input(
@@ -221,10 +186,7 @@ class MainMenu:
                 "Please enter exactly 11 digits."
             )
 
-        # -----------------------------------------------------
-        # Password
-        # -----------------------------------------------------
-
+        
         while True:
 
             password = input(
@@ -242,10 +204,7 @@ class MainMenu:
                 "\n- contain at least one special character"
             )
 
-        # -----------------------------------------------------
-        # Skills
-        # -----------------------------------------------------
-
+       
         while True:
 
             skills_input = input(
@@ -262,10 +221,6 @@ class MainMenu:
                 break
 
             print("Please enter at least one skill.")
-
-        # -----------------------------------------------------
-        # Register Freelancer
-        # -----------------------------------------------------
 
         try:
 
