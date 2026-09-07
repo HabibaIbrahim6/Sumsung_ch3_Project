@@ -1,5 +1,6 @@
 from ..utils.helper_functions import  print_menu
 from ..models.invoice import Invoice
+from models.milestone import Milestone
 class Project:
     def __init__(self,project_id, title, budget, client, deadline, milestones):
         self.id = project_id
@@ -38,3 +39,33 @@ class Project:
 
     def add_invoice(self, invoice):
         self.invoice = invoice
+        
+    def to_dict(self):
+        return {
+            "project_id": self.id,
+            "title": self.title,
+            "budget": self.budget,
+            "client": self.client.user_id if self.client else None,
+            "freelancer": self.freelancer.user_id if self.freelancer else None,
+            "status": self.status,
+            "deadline": self.deadline,
+            "milestones": [milestone.to_dict() for milestone in self.milestones],
+            "invoice": self.invoice.to_dict() if self.invoice else None
+        }
+        
+    @classmethod
+    def from_dict(cls, project_data, client=None, freelancer=None):
+        milestones = [Milestone.from_dict(milestone_data) for milestone_data in project_data["milestones"]]
+        invoice = Invoice.from_dict(project_data["invoice"]) if project_data.get("invoice") else None
+        project = cls(
+            project_id=project_data["project_id"],
+            title=project_data["title"],
+            budget=project_data["budget"],
+            client=client,
+            deadline=project_data["deadline"],
+            milestones=milestones
+        )
+        project.freelancer = freelancer
+        project.status = project_data["status"]
+        project.invoice = invoice
+        return project

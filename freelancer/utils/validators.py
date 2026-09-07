@@ -1,38 +1,34 @@
 import re # Regular expressions module for pattern matching
 from datetime import datetime
 
-# ---------- Regex Patterns ----------
+#  Regex Patterns
 
-EMAIL_PATTERN = re.compile(r"^[\w.]+@(gmail|yahoo)\.com$")
-PASSWORD_PATTERN = re.compile(r"^(?=.*\d)(?=.*[!@#$%^&*]).{9,}$")
-DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-PHONE_PATTERN = re.compile(r"01[0125]\d{8}")
+EmailPattern = re.compile(r"^[\w.]+@(gmail|yahoo)\.com$")
+PasswordPattern =re.compile(r"^(?=.*\d)(?=.*[!@#$%^&*]).{9,}$")
+DatePattern = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+PhonePattern = re.compile(r"01[0125]\d{8}")
 
 
-# ---------- Validation Functions ----------
-# check if the email is valid
+
+#  Validation Functions 
 def is_valid_email(email):
-    return bool(EMAIL_PATTERN.fullmatch(email))
+    return bool(EmailPattern.fullmatch(email))
 
-# check if the password is valid
+
 def is_valid_password(password):
-    return bool(PASSWORD_PATTERN.fullmatch(password))
+    return bool(PasswordPattern.fullmatch(password))
 
 def check_password(self, password):
         return self.password == password
 
 def is_valid_phone(phone):
-    """
-    Check if the phone number is a valid Egyptian mobile number.
-    """
-    return bool(PHONE_PATTERN.fullmatch(phone))
+    return bool(PhonePattern.fullmatch(phone))
 
-# check if the date is valid
-DATE_PATTERN = re.compile(r"^\d{1,2}/\d{1,2}/\d{4}$")
+DatePattern = re.compile(r"^\d{1,2}/\d{1,2}/\d{4}$")
 
 
 def is_valid_date(date):
-    if not DATE_PATTERN.fullmatch(date):
+    if not DatePattern.fullmatch(date):
         return False
 
     try:

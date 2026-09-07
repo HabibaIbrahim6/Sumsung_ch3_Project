@@ -69,8 +69,7 @@ class FreelancerMenu:
         else:
             project.print_milestones()
 
-            milestone_choice = helper_functions.get_menu_choice(1, len(project.milestones),
-                                                                "Choose milestone to update")
+            milestone_choice = helper_functions.get_menu_choice(1, len(project.milestones),"Choose milestone to update")
 
             current_milestone = project.milestones[milestone_choice - 1]
             new_status = helper_functions.get_new_milestone_status()
@@ -80,25 +79,76 @@ class FreelancerMenu:
             self.manager.save_users()  
             
     def view_and_respond_to_requests(self):
-        for request in self.freelancer.received_requests:
-            if request["status"] == "pending":
-                print(f"Request from Client: {request['client'].name}, Project: {request['project'].title}, Message: {request['message']}")
-                decision = input("Do you want to accept or reject request (accept/reject): ").strip().lower()
-                while decision not in ["accept", "reject"]:
-                    if decision == "accept":
-                        self.freelancer.assign_project(request["project"])
-                        request["status"] = "accepted"
-                        print("Request accepted and project assigned.")
-                    elif decision == "reject":
-                        request["status"] = "rejected"
-                        print("Request rejected.")
-                    else:
-                        print("Invalid choice. Please choose 'accept' or 'reject'.")
+        pending_requests = [
+            request for request in self.freelancer.received_requests
+            if request["status"] == "pending"
+        ]
 
+        if not pending_requests:
+            print("No pending requests.")
+            return
+
+        for request in pending_requests:
+            print(
+                f"Request from Client: {request['client'].name}, "
+                f"Project: {request['project'].title}, "
+                f"Message: {request['message']}"
+            )
+
+            decision = input(
+                "Do you want to accept or reject request (accept/reject): "
+            ).strip().lower()
+
+            while decision not in ["accept", "reject"]:
+                decision = input(
+                    "Invalid choice. Please choose 'accept' or 'reject': "
+                ).strip().lower()
+
+            if decision == "accept":
+                self.freelancer.assign_project(request["project"])
+                request["status"] = "accepted"
+                print("Request accepted and project assigned.")
+            else:
+                request["status"] = "rejected"
+                print("Request rejected.")
+            self.manager.save_users()  
     def view_messages(self):
         pass
     def financial_report(self):
-        pass
+        print("========== FINANCIAL REPORT ==========")
+
+        invoiced_projects = [
+            project for project in self.freelancer.assigned_projects
+            if project.invoice is not None
+        ]
+
+        if not invoiced_projects:
+            print("No invoices yet.")
+            return
+
+        total_amount = 0
+        total_commission = 0
+        total_earnings = 0
+
+        for project in invoiced_projects:
+            invoice = project.invoice
+
+            print(f"\nProject: {project.title}")
+            print(f"  Invoice ID: {invoice.invoice_id}")
+            print(f"  Status: {invoice.status}")
+            print(f"  Total Amount: ${invoice.amount:.2f}")
+            print(f"  Platform Commission: ${invoice.platform_commission:.2f}")
+            print(f"  Net Earnings: ${invoice.freelancer_earnings:.2f}")
+
+            total_amount += invoice.amount
+            total_commission += invoice.platform_commission
+            total_earnings += invoice.freelancer_earnings
+
+        print("\n========== SUMMARY ==========")
+        print(f"Total Projects: {len(invoiced_projects)}")
+        print(f"Total Amount Invoiced: ${total_amount:.2f}")
+        print(f"Total Commission Deducted: ${total_commission:.2f}")
+        print(f"Total Net Earnings: ${total_earnings:.2f}")
 
     def view_profile(self):
         self.freelancer.display_profile()

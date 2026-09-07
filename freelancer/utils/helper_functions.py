@@ -107,6 +107,6 @@ def commission_rate(budget):
 
     return commission_amount
 
-
+    
 
 

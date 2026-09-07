@@ -102,11 +102,10 @@ class ClientMenu:
         invoice = Invoice(helper_functions.generate_id("INV", 1), project_id,budget)
         project.add_invoice(invoice)    
         self.client.add_project(project)
-
+        self.manager.save_users() 
+        
         print("\nProject created successfully")
         print(f"Project ID: {project_id}")
-
-        
 
 
     def view_projects(self):
@@ -205,6 +204,7 @@ class ClientMenu:
             
         self.freelancer.add_request(request)
         self.client.add_request(request)
+        self.manager.save_users()  
         print("Project request sent successfully.")
 
     def view_requests(self):
@@ -251,12 +251,11 @@ class ClientMenu:
         if confirmation != "y":
             print("Delete cancelled.")
             return
-        # The following line calls the delete_project method of the client instance. This method attempts to remove the project with the specified project_id from the client's list of created projects. If the deletion is successful, it returns True; otherwise, it returns False.
         if self.client.delete_project(project_id):
             self.manager.save_users()
             print("Project deleted from saved data.")
 
-        # Remove it from manager too
+        # Remove from manager too
         if project in self.manager.projects:
             self.manager.projects.remove(project)
 
@@ -273,14 +272,13 @@ class ClientMenu:
         else:
             current_project.print_milestones()
 
-            milestone_choice = helper_functions.get_menu_choice(1, len(current_project.milestones),
-                                                                "Choose milestone to update")
+            milestone_choice = helper_functions.get_menu_choice(1, len(current_project.milestones),"Choose milestone to update")
 
             current_milestone = current_project.milestones[milestone_choice - 1]
             new_status = helper_functions.get_new_milestone_status()
             current_milestone.update_status(new_status)
             current_project.update_project_status()
-
+            self.manager.save_users()  
 
     def generate_invoice(self):
         print("\n========== GENERATE INVOICE ==========")
@@ -299,3 +297,4 @@ class ClientMenu:
             project.invoice = invoice
             print("\n========== INVOICE GENERATED SUCCESSFULLY ==========")
             invoice.display_invoice()
+            self.manager.save_users()
