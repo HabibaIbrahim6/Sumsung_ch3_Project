@@ -1,100 +1,352 @@
 import json
-from client import Client
+from .client import Client
 from .freelancer import Freelancer
 from .project import Project
-from .invoice import Invoice
+
 from ..utils import helper_functions
-from ..utils import validators
+
 from ..menus.freelancer_menu import FreelancerMenu
 from ..menus.client_menu import ClientMenu
 
+
 class FreelanceManager:
+
     def __init__(self):
         self.users = {}
+        self.projects = []
         self.load_users()
 
     def load_users(self):
         try:
-            with open("data.jsonl", "r") as file:
+            with open("data.jsonl", "r", encoding="utf-8") as file:
+
                 for line in file:
                     line = line.strip()
+
                     if not line:
                         continue
 
-                    user_data = json.loads(line)
-                    user_id = user_data["user_id"]
+                    try:
+                        user_data = json.loads(line)
+                    except json.JSONDecodeError:
+                        print("Skipping invalid JSON line.")
+                        continue
 
-                    if user_data["role"] == "Client":
-                        user = Client.from_dict(user_id, user_data)
-                    elif user_data["role"] == "Freelancer":
-                        user = Freelancer.from_dict(user_id, user_data)
+                    if "user_id" not in user_data:
+                        print("Skipping user without user_id.")
+                        continue
+
+                    user_id = str(user_data["user_id"])
+                    role = user_data.get("role")
+
+                    if role == "Client":
+                        user = Client.from_dict(
+                            user_id,
+                            user_data
+                        )
+
+                    elif role == "Freelancer":
+                        user = Freelancer.from_dict(
+                            user_id,
+                            user_data
+                        )
+
                     else:
+                        print(
+                            f"Skipping user {user_id}: "
+                            f"unknown role."
+                        )
                         continue
 
                     self.users[user_id] = user
 
+            self.rebuild_relationships()
+
         except FileNotFoundError:
-            return
+            print(
+                "No data.jsonl file found. "
+                "Starting with empty system."
+            )
+
+    def rebuild_relationships(self):
+        self.projects = []
+
+        for user in self.users.values():
+
+            if isinstance(user, Client):
+
+                for project in user.projects_created:
+
+                    if project not in self.projects:
+                        self.projects.append(project)
+
+        for user in self.users.values():
+
+            if not isinstance(user, Freelancer):
+                continue
+
+            project_ids = getattr(
+                user,
+                "_assigned_project_ids",
+                []
+            )
+
+            user.assigned_projects = []
+
+            for project_id in project_ids:
+
+                project = self.get_project_by_id(project_id)
+
+                if project is None:
+                    continue
+
+                if project not in user.assigned_projects:
+                    user.assigned_projects.append(project)
+
+                project.freelancer = user
+
+        for user in self.users.values():
+
+            if not isinstance(user, Freelancer):
+                continue
+
+            request_data_list = getattr(
+                user,
+                "_received_request_data",
+                []
+            )
+
+            user.received_requests = []
+
+            for request_data in request_data_list:
+
+                project_id = request_data.get("project_id")
+                client_id = request_data.get("client_id")
+
+                project = self.get_project_by_id(project_id)
+                client = self.users.get(str(client_id))
+
+                if project is None or client is None:
+                    continue
+
+                request = {
+                    "project": project,
+                    "client": client,
+                    "message": request_data.get(
+                        "message",
+                        ""
+                    ),
+                    "status": request_data.get(
+                        "status",
+                        "pending"
+                    )
+                }
+
+                user.received_requests.append(request)
+
+    def get_project_by_id(self, project_id):
+
+        if project_id is None:
+            return None
+
+        project_id = str(project_id)
+
+        for project in self.projects:
+
+            if str(project.id) == project_id:
+                return project
+
+        return None
 
     def save_users(self):
-        with open("data.jsonl", "w") as file:
+
+        data = []
+
+        try:
+
             for user in self.users.values():
-                file.write(json.dumps(user.to_dict()) + "\n")
+
+                user_data = user.to_dict()
+                json.dumps(user_data)
+                data.append(user_data)
+
+        except Exception as error:
+
+            print("\nERROR: Could not save data.")
+            print(f"Reason: {error}")
+            print(
+                "The existing data.jsonl file "
+                "was NOT changed."
+            )
+
+            return False
+
+        try:
+
+            with open(
+                "data.jsonl",
+                "w",
+                encoding="utf-8"
+            ) as file:
+
+                for user_data in data:
+
+                    file.write(
+                        json.dumps(user_data)
+                        + "\n"
+                    )
+
+            return True
+
+        except OSError as error:
+
+            print("\nERROR: Could not write data.jsonl.")
+            print(f"Reason: {error}")
+
+            return False
 
     def login(self, user_id, password):
-        
+
+        user_id = str(user_id).strip()
+
         if user_id not in self.users:
             print("User not found.")
-            return
+            return None
 
         user = self.users[user_id]
 
-        if validators.check_password(user,password):
-            print("Login success")
-        else:
+        if password != user.password:
             print("Wrong password.")
-            return
+            return None
+
+        print("\nLogin success.")
 
         if isinstance(user, Client):
-            client_menu = ClientMenu(user, self)
+
+            client_menu = ClientMenu(
+                user,
+                self
+            )
+
             client_menu.show_menu()
 
         elif isinstance(user, Freelancer):
-            freelancer_menu = FreelancerMenu(user, self)
+
+            freelancer_menu = FreelancerMenu(
+                user,
+                self
+            )
+
             freelancer_menu.show_menu()
 
-    def register_client(self, name, phone_num, password):
+        return user
 
-        user_id = helper_functions.generate_id("C", len(self.users) + 1)
+    def register_client(
+        self,
+        name,
+        email,
+        password
+    ):
+
+        user_id = helper_functions.generate_id(
+            "C",
+            len(self.users) + 1
+        )
 
         client = Client(
             user_id,
             name,
-            phone_num,
+            email,
             password
         )
 
         self.users[user_id] = client
 
-        self.save_users()
+        success = self.save_users()
 
-        print("registered successfully")
+        if not success:
 
-    def register_freelancer(self, name, phone_num, password, skills):
+            del self.users[user_id]
 
-        user_id = helper_functions.generate_id("F", len(self.users) + 1)
+            print(
+                "Registration failed because "
+                "the data could not be saved."
+            )
+
+            return None
+
+        print(
+            "\nRegistered successfully."
+            f"\nYour User ID is: {user_id}"
+        )
+
+        return client
+
+    def register_freelancer(
+        self,
+        name,
+        email,
+        password,
+        skills
+       ):
+
+        user_id = helper_functions.generate_id(
+            "F",
+            len(self.users) + 1
+        )
 
         freelancer = Freelancer(
             user_id,
             name,
-            phone_num,
+            email,
             password,
             skills
         )
 
         self.users[user_id] = freelancer
 
-        self.save_users()
+        success = self.save_users()
 
-        print("registered successfully.")
+        if not success:
 
+            del self.users[user_id]
+
+            print(
+                "Registration failed because "
+                "the data could not be saved."
+            )
+
+            return None
+
+        print(
+            "\nRegistered successfully."
+            f"\nYour User ID is: {user_id}"
+        )
+
+        return freelancer
+
+    def add_project(self, project):
+
+        if not isinstance(project, Project):
+            raise TypeError(
+                "project must be a Project object."
+            )
+
+        if project not in self.projects:
+            self.projects.append(project)
+
+    def get_freelancers(self):
+
+        return [
+            user
+            for user in self.users.values()
+            if isinstance(user, Freelancer)
+        ]
+
+    def get_clients(self):
+
+        return [
+            user
+            for user in self.users.values()
+            if isinstance(user, Client)
+        ]

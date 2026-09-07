@@ -1,4 +1,11 @@
-from freelancer.models.freelancer import Freelancer
+from typing import TYPE_CHECKING
+
+from freelancerV2.Sumsung_ch3_Project.freelancer.models.milestone import Milestone
+
+if TYPE_CHECKING:
+    from freelancer.models.freelancer import Freelancer
+
+
 
 
 def get_new_milestone_status():
@@ -55,27 +62,48 @@ def generate_id(prefix,counter):
     return f"{prefix}{counter:03}"
 
 def get_milestones():
-    print("Enter at least one milestone , enter 'EXIT' after finishing \n")
+    print(
+        "Enter at least one milestone, "
+        "enter 'EXIT' after finishing.\n"
+    )
+
     milestones = []
 
     while True:
-        milestone = input("Milestone: ").strip()
+        title = input("Milestone: ").strip()
 
-        if milestone == "":
-            print("Please enter a milestone")
-            continue
-
-        if milestone.lower() == "exit":
+        if title.lower() == "exit":
             if len(milestones) == 0:
                 print("Enter at least one milestone first.")
                 continue
-            else:
-                break
+            break
 
-        if milestone not in milestones:
-            milestones.append(milestone)
-        else:
+        if title == "":
+            print("Please enter a milestone.")
+            continue
+
+        if any(
+            milestone.title.lower() == title.lower()
+            for milestone in milestones
+        ):
             print("That milestone already exists. Try again.")
+            continue
+
+        description = input(
+            "Milestone description: "
+        ).strip()
+
+        deadline = input(
+            "Milestone deadline DD/MM/YYYY: "
+        ).strip()
+
+        milestone = Milestone(
+            title,
+            description,
+            deadline
+        )
+
+        milestones.append(milestone)
 
     return milestones
 

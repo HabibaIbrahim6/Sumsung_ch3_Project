@@ -1,15 +1,15 @@
+from typing import TYPE_CHECKING
 
 from ..utils import validators as val
 from ..utils import helper_functions
 
-from .AdminMenu import AdminMenu
-from .client_menu import ClientMenu
-from .freelancer_menu import FreelancerMenu
-from ..models.freelancemaneger import FreelanceManager
+if TYPE_CHECKING:
+    from ..models.freelancemaneger import FreelanceManager
+
 
 class MainMenu:
 
-    def __init__(self, manager:FreelanceManager):
+    def __init__(self, manager: "FreelanceManager"):
         self.manager = manager
 
     def show_menu(self):
@@ -43,49 +43,52 @@ class MainMenu:
                 print("\nThank you for using SIC Freelance Project Hub!")
                 break
 
+   
     def login_page(self):
 
-        print("========== LOGIN ==========")
+        print("\n========== LOGIN ==========")
 
-        while not user_id or not password:
+        while True:
+
             user_id = input("Enter your user ID: ").strip()
             password = input("Enter your password: ").strip()
-            print("User ID and password cannot be empty.")
+
+            if not user_id or not password:
+                print("User ID and password cannot be empty.")
+                continue
+
+            break
 
         user = self.manager.login(user_id, password)
-        if not user:    
+
+        if not user:
             print("Login failed. Please check your credentials.")
             return
-        
+
+    
     def register_client_page(self):
 
-        print("====== REGISTER AS CLIENT ======")
+        print("\n====== REGISTER AS CLIENT ======")
 
         while True:
-
             name = input("Enter your name: ").strip()
-
             if name:
                 break
-
             print("Name cannot be empty.")
 
-       
+      
         while True:
-
-            phone_num = input(
-                "Enter your phone number: "
+            # use str.strip() to remove leading and trailing spaces
+            email = input(
+                "Enter your email: "
             ).strip()
 
-            if val.is_valid_phone(phone_num):
+            if val.is_valid_email(email):
                 break
 
-            print(
-                "Invalid phone number.\n"
-                "Please enter exactly 11 digits."
-            )
+            print("Invalid email format.")
 
-       
+
         while True:
 
             password = input(
@@ -103,17 +106,17 @@ class MainMenu:
                 "\n- contain at least one special character"
             )
 
-            self.manager.register_client(
-                name,
-                phone_num,
-                password
-            )
-   
+     
+        self.manager.register_client(
+            name,
+            email,
+            password
+        )
+
+  
     def register_freelancer_page(self):
 
-        print("====== REGISTER AS FREELANCER ======")
-
-        
+        print("\n====== REGISTER AS FREELANCER ======")
         while True:
 
             name = input("Enter your name: ").strip()
@@ -123,22 +126,17 @@ class MainMenu:
 
             print("Name cannot be empty.")
 
-       
         while True:
 
-            phone_num = input(
-                "Enter your phone number: "
+            email = input(
+                "Enter your email: "
             ).strip()
 
-            if val.is_valid_phone(phone_num):
+            if val.is_valid_email(email):
                 break
 
-            print(
-                "Invalid phone number.\n"
-                "Please enter exactly 11 digits."
-            )
+            print("Invalid email format.")
 
-        
         while True:
 
             password = input(
@@ -156,7 +154,7 @@ class MainMenu:
                 "\n- contain at least one special character"
             )
 
-       
+
         while True:
 
             skills_input = input(
@@ -174,9 +172,10 @@ class MainMenu:
 
             print("Please enter at least one skill.")
 
-            self.manager.register_freelancer(
-                name,
-                phone_num,
-                password,
-                skills
-            )
+     
+        self.manager.register_freelancer(
+            name,
+            email,
+            password,
+            skills
+        )

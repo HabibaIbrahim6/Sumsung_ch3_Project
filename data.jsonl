@@ -1,0 +1,5 @@
+{"user_id": "C001", "name": "HAIBA", "email": "01156102316", "password": "habiba#67", "role": "Client", "projects_created": [], "sent_requests": [], "messages": []}
+{"user_id": "F002", "name": "esraa", "email": "01156102316", "password": "esraa#67200", "role": "Freelancer", "skills": ["backend devloper"], "assigned_projects": [], "received_requests": []}
+{"user_id": "C003", "name": "habiba", "email": "habiba@gmail.com", "password": "habiba#67", "role": "Client", "projects_created": [], "sent_requests": [], "messages": []}
+{"user_id": "C004", "name": "habiba", "email": "esraa@gmail.com", "password": "esraa123#67", "role": "Client", "projects_created": [], "sent_requests": [], "messages": []}
+{"user_id": "F005", "name": "malak", "email": "malak@gmail.com", "password": "malak#672005", "role": "Freelancer", "skills": ["kjd"], "assigned_projects": [], "received_requests": []}

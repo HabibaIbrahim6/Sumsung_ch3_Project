@@ -25,10 +25,6 @@ class Client(User):
    
 
     def add_project(self, project):
-        """
-        Add a new project to the client's projects.
-        """
-
         if not isinstance(project, Project):
             raise TypeError("project must be a Project object.")
 
@@ -40,12 +36,11 @@ class Client(User):
         print("Project created successfully.")
 
         return project
-
+    
+    
+    # display all projects created by the client 
     def view_projects(self):
-        """
-        Display all projects created by the client.
-        """
-
+        
         if not self.projects_created:
             print("No projects created yet.")
             return
@@ -68,10 +63,6 @@ class Client(User):
         return None
 
     def delete_project(self, project_id):
-        """
-        Delete a project using its ID.
-        """
-
         project = self.get_project_by_id(project_id)
 
         if project is None:
@@ -79,9 +70,6 @@ class Client(User):
             return False
 
         self.projects_created.remove(project)
-
-        print("Project deleted successfully.")
-
         return True
 
     
@@ -95,12 +83,9 @@ class Client(User):
         print("Project request added successfully.")
 
         return request
-
+    
+    # return all requests sent by the client
     def get_requests(self):
-        """
-        Return all project requests sent by the client.
-        """
-
         return self.sent_requests
 
     def get_request_by_id(self, request_id):
@@ -115,11 +100,8 @@ class Client(User):
 
         return None
 
+    #display all requests sent by the client
     def view_requests(self):
-        """
-        Display all requests sent by the client.
-        """
-
         if not self.sent_requests:
             print("No project requests sent yet.")
             return
@@ -129,23 +111,16 @@ class Client(User):
         for request in self.sent_requests:
             print(request)
 
-   
+    # Add a message to the client's messages list
     def add_message(self, message):
-        """
-        Add a message received by the client.
-        """
-
         self.messages.append(message)
 
         print("Message received successfully.")
 
         return message
-
+    
+    # return all messages received by the client
     def get_messages(self):
-        """
-        Return all messages received by the client.
-        """
-
         return self.messages
 
     def view_messages(self):
@@ -163,11 +138,8 @@ class Client(User):
             print(message)
 
    
+   # display the client's profile information, including the number of projects created, requests sent, and messages received
     def display_profile(self):
-        """
-        Display the client's profile information.
-        """
-
         super().display_profile()
 
         print(
@@ -185,12 +157,8 @@ class Client(User):
             f"{len(self.messages)}"
         )
 
+    # Save the client's data to a dictionary for serialization
     def to_dict(self):
-        """
-        Convert the Client object into a dictionary
-        so it can be saved in JSON.
-        """
-
         return {
             "user_id": self.id,
             "name": self.name,
@@ -210,9 +178,6 @@ class Client(User):
 
     @classmethod
     def from_dict(cls, user_id, data):
-        """
-        Recreate a Client object from dictionary data.
-        """
 
         client = cls(
             user_id,

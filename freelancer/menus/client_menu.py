@@ -1,18 +1,23 @@
-from models.invoice import Invoice
+from typing import TYPE_CHECKING
+
+from ..models.invoice import Invoice
 from ..models.project import Project
 from ..models.client import Client
 from ..utils import validators as val
 from ..utils import helper_functions
-from ..models.freelancemaneger import FreelanceManager
-from ..models.freelancer import Freelancer 
+
+# use TYPE_CHECKING to avoid circular imports
+if TYPE_CHECKING:
+    from ..models.freelancemaneger import FreelanceManager
+
+
 class ClientMenu:
 
-    def __init__(self, client: Client, manager: FreelanceManager, freelancer: Freelancer,invoice: Invoice):
+    def __init__(self, client: Client, manager: "FreelanceManager"):
         self.client = client
         self.manager = manager
-        self.freelancer = freelancer
-        self.invoice = invoice
 
+   
 
     def show_menu(self):
 
@@ -77,16 +82,22 @@ class ClientMenu:
 
         project_id = helper_functions.generate_id(
             "P",
-            len(self.manager.projects) + 1
+            len(self.client.projects_created) + 1
         )
 
         print(f"Generated Project ID: {project_id}")
 
-        title = val.get_valid_title("Enter project title: ")
+        title = val.get_valid_title(
+            "Enter project title: "
+        )
 
-        budget = val.get_valid_amount("Enter the project budget: ")
+        budget = val.get_valid_amount(
+            "Enter the project budget: "
+        )
 
-        deadline = val.get_valid_deadline("Enter the project deadline YYYY-MM-DD: ")
+        deadline = val.get_valid_deadline(
+            "Enter the project deadline YYYY-MM-DD: "
+        )
 
         milestones = helper_functions.get_milestones()
 
@@ -99,79 +110,144 @@ class ClientMenu:
             milestones
         )
 
-        invoice = Invoice(helper_functions.generate_id("INV", 1), project_id,budget)
-        project.add_invoice(invoice)    
+        # Create invoice
+        invoice_id = helper_functions.generate_id(
+            "INV",
+            len(self.client.projects_created) + 1
+        )
+
+        invoice = Invoice(
+            invoice_id,
+            project_id,
+            budget
+        )
+
+        project.add_invoice(invoice)
+
+        # Add project to client
         self.client.add_project(project)
-        self.manager.save_users() 
-        
-        print("\nProject created successfully")
+
+        # Save data
+        self.manager.save_users()
+
+        print("\nProject created successfully.")
         print(f"Project ID: {project_id}")
 
-
+ 
     def view_projects(self):
+
+        print("\n========== MY PROJECTS ==========")
 
         self.client.view_projects()
 
-
+ 
     def search_freelancers(self):
 
         print("\n========== FREELANCERS ==========")
 
-        print("1. all freelancers")
-        print("2. freelancers by skill")
-        print("3. freelancers by project count done")
-        
+        print("1. All freelancers")
+        print("2. Freelancers by skill")
+        print("3. Freelancers by completed project count")
+
         choice = helper_functions.get_menu_choice(1, 3)
-        freelancers = None
+
+        freelancers = []
+
+      
         if choice == 1:
+
             freelancers = [
                 user
                 for user in self.manager.users.values()
                 if user.role == "Freelancer"
             ]
+
+
         elif choice == 2:
-            skill = input("Enter skill to search for: ").strip()
+
+            skill = input(
+                "Enter skill to search for: "
+            ).strip()
+
             freelancers = [
                 user
                 for user in self.manager.users.values()
-                if user.role == "Freelancer" and skill in getattr(user, "skills", [])
+                if user.role == "Freelancer"
+                and skill.lower() in [
+                    s.lower()
+                    for s in getattr(user, "skills", [])
+                ]
             ]
+
         elif choice == 3:
+
             freelancers = [
                 user
                 for user in self.manager.users.values()
                 if user.role == "Freelancer"
             ]
-            freelancers.sort(key=lambda x: len(x.projects_done), reverse=True)
+
+            freelancers.sort(
+                key=lambda freelancer: len(
+                    getattr(freelancer, "projects_done", [])
+                ),
+                reverse=True
+            )
+
+       
 
         if freelancers is None:
             print("No freelancers found")
             return
 
+      
+
+        print("\n========== SEARCH RESULTS ==========")
+
         for freelancer in freelancers:
 
-            skills = getattr(freelancer, "skills", [])
+            skills = getattr(
+                freelancer,
+                "skills",
+                []
+            )
 
             if isinstance(skills, list):
-                skills = "- ".join(skills)
+                skills_text = ", ".join(skills)
+            else:
+                skills_text = str(skills)
+
+            projects_done = len(
+                getattr(
+                    freelancer,
+                    "projects_done",
+                    []
+                )
+            )
 
             print(
-                f"ID: {freelancer.id}  "
-                f"Name: {freelancer.name} "
-                f"Skills: {skills}"
-                "---------"
+                f"ID: {freelancer.id}\n"
+                f"Name: {freelancer.name}\n"
+                f"Skills: {skills_text}\n"
+                f"Completed Projects: {projects_done}"
             )
+
+            print("---------------------------------")
 
 
     def send_project_request(self):
 
         print("\n========== SEND PROJECT REQUEST ==========")
 
+
         if not self.client.projects_created:
 
             print("You have no projects.")
             print("Please create a project first.")
+
             return
+
+    
 
         self.client.view_projects()
 
@@ -179,49 +255,118 @@ class ClientMenu:
             "\nEnter project ID: "
         ).strip()
 
-        project = self.client.get_project_by_id(project_id)
+        project = self.client.get_project_by_id(
+            project_id
+        )
 
         if project is None:
 
             print("Project not found.")
+
             return
 
-        self.search_freelancers()
+     
+        freelancers = [
+            user
+            for user in self.manager.users.values()
+            if user.role == "Freelancer"
+        ]
+
+        if not freelancers:
+
+            print("No freelancers available.")
+
+            return
+
+        print("\n========== AVAILABLE FREELANCERS ==========")
+
+        for freelancer in freelancers:
+
+            skills = getattr(
+                freelancer,
+                "skills",
+                []
+            )
+
+            if isinstance(skills, list):
+                skills = ", ".join(skills)
+
+            print(
+                f"ID: {freelancer.id} | "
+                f"Name: {freelancer.name} | "
+                f"Skills: {skills}"
+            )
+
+     
 
         freelancer_id = input(
             "\nEnter freelancer ID: "
         ).strip()
 
+        freelancer = self.manager.users.get(
+            freelancer_id
+        )
+
+        if freelancer is None or freelancer.role != "Freelancer":
+
+            print("Freelancer not found.")
+
+            return
+
+       
+
         message = input(
             "Enter your message: "
         ).strip()
 
-        request = {"client":self.client,
-                        "project":project,
-                        "freelancer_id":freelancer_id,
-                        "message":message,
-                        "status": "pending"
-                        }
-            
-        self.freelancer.add_request(request)
-        self.client.add_request(request)
-        self.manager.save_users()  
-        print("Project request sent successfully.")
+        if not message:
 
+            print("Message cannot be empty.")
+
+            return
+
+       
+        request = {
+            "client": self.client,
+            "project": project,
+            "freelancer_id": freelancer.id,
+            "message": message,
+            "status": "pending"
+        }
+
+        # Add request to freelancer
+        freelancer.add_request(request)
+
+        # Add request to client
+        self.client.add_request(request)
+
+        # Save
+        self.manager.save_users()
+
+        print("\nProject request sent successfully.")
+
+ 
     def view_requests(self):
+
+        print("\n========== SENT REQUESTS ==========")
+
         self.client.view_requests()
 
-
+    
     def view_messages(self):
+
+        print("\n========== MESSAGES ==========")
 
         self.client.view_messages()
 
- 
+   
     def view_profile(self):
+
+        print("\n========== MY PROFILE ==========")
 
         self.client.display_profile()
 
-  
+   
     def delete_project(self):
 
         print("\n========== DELETE PROJECT ==========")
@@ -229,20 +374,24 @@ class ClientMenu:
         if not self.client.projects_created:
 
             print("You have no projects to delete.")
+
             return
-        # View the client's projects to help them choose which one to delete
+
+    
         self.client.view_projects()
-       
-        #strip() is used to remove any leading or trailing whitespace from the input, ensuring that the project ID is clean and accurate for the lookup.
+
         project_id = input(
             "\nEnter project ID to delete: "
         ).strip()
 
-        project = self.client.get_project_by_id(project_id)
+        project = self.client.get_project_by_id(
+            project_id
+        )
 
         if project is None:
 
             print("Project not found.")
+
             return
 
         confirmation = input(
@@ -250,52 +399,133 @@ class ClientMenu:
         ).strip().lower()
 
         if confirmation != "y":
+
             print("Delete cancelled.")
+
             return
-        if self.client.delete_project(project_id):
+
+      
+        deleted = self.client.delete_project(
+            project_id
+        )
+
+        if deleted:
+
             self.manager.save_users()
-            print("Project deleted from saved data.")
 
-        # Remove from manager too
-        if project in self.manager.projects:
-            self.manager.projects.remove(project)
+            print("Project deleted successfully.")
 
-
+   
     def update_milestones(self):
+
         print("\n========== UPDATE MILESTONES ==========")
-        print("Enter the project ID:")
-        project_id = input()
-        current_project = self.client.get_project_by_id(project_id)
+
+        project_id = input(
+            "Enter the project ID: "
+        ).strip()
+
+        current_project = self.client.get_project_by_id(
+            project_id
+        )
 
         if current_project is None:
+
             print("Project ID not found.")
 
-        else:
-            current_project.print_milestones()
+            return
 
-            milestone_choice = helper_functions.get_menu_choice(1, len(current_project.milestones),"Choose milestone to update")
+       
+        if not current_project.milestones:
 
-            current_milestone = current_project.milestones[milestone_choice - 1]
-            new_status = helper_functions.get_new_milestone_status()
-            current_milestone.update_status(new_status)
-            current_project.update_project_status()
-            self.manager.save_users()  
+            print("This project has no milestones.")
+
+            return
+
+       
+        current_project.print_milestones()
+
+        milestone_choice = helper_functions.get_menu_choice(
+            1,
+            len(current_project.milestones),
+            "Choose milestone to update "
+        )
+
+        current_milestone = current_project.milestones[
+            milestone_choice - 1
+        ]
+
+       
+        new_status = helper_functions.get_new_milestone_status()
+
+        current_milestone.update_status(
+            new_status
+        )
+
+
+
+        current_project.update_project_status()
+
+
+        self.manager.save_users()
+
+        print("\nMilestone status updated successfully.")
+
+    
 
     def generate_invoice(self):
+
         print("\n========== GENERATE INVOICE ==========")
-        candidate_projects = helper_functions.create_list_of_candidate_projects_for_invoicing(self.client)
+
+        candidate_projects = (
+            helper_functions
+            .create_list_of_candidate_projects_for_invoicing(
+                self.client
+            )
+        )
+
         if not candidate_projects:
-            print("There are no projects available for invoicing.")
-        else:
 
-            helper_functions.print_menu(candidate_projects)
+            print(
+                "There are no projects available for invoicing."
+            )
 
-            choice = helper_functions.get_menu_choice(1, len(candidate_projects), "Choose a project to invoice")
+            return
 
-            project = candidate_projects[choice - 1]
-            invoice_id = helper_functions.generate_id("INV",1) #1 is a placeholder till I  find a solution
-            invoice = Invoice(invoice_id, project.id, project.budget)
-            project.invoice = invoice
-            print("\n========== INVOICE GENERATED SUCCESSFULLY ==========")
-            invoice.display_invoice()
-            self.manager.save_users()
+
+        helper_functions.print_menu(
+            candidate_projects
+        )
+
+
+        choice = helper_functions.get_menu_choice(
+            1,
+            len(candidate_projects),
+            "Choose a project to invoice "
+        )
+
+        project = candidate_projects[
+            choice - 1
+        ]
+
+        invoice_id = helper_functions.generate_id(
+            "INV",
+            len(candidate_projects) + 1
+        )
+
+        invoice = Invoice(
+            invoice_id,
+            project.id,
+            project.budget
+        )
+
+        project.add_invoice(invoice)
+
+
+        print(
+            "\n========== INVOICE GENERATED SUCCESSFULLY =========="
+        )
+
+        invoice.display_invoice()
+
+
+        self.manager.save_users()

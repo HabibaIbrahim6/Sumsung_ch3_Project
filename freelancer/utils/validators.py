@@ -43,20 +43,25 @@ def is_valid_date(date):
         return False
 
 
+from datetime import datetime
+
+
 def get_valid_deadline(message):
+
     while True:
+
         date_input = input(message).strip()
 
-        if is_valid_date(date_input):
-            deadline_date = datetime.strptime(date_input, "%Y-%m-%d")
+        try:
+            deadline_date = datetime.strptime(
+                date_input,
+                "%d/%m/%Y"
+            )
 
-            if deadline_date.date() > datetime.today().date():
-                return date_input
-            else:
-                print("The deadline must be a date in the future ")
-        else:
-            print("Please enter a valid date format ")
+            return deadline_date.strftime("%Y-%m-%d")
 
+        except ValueError:
+            print("Invalid date. Please enter a valid date as DD/MM/YYYY.")
 
 def is_valid_amount(amount):
     try:

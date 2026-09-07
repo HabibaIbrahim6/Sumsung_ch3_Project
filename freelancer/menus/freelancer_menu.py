@@ -1,16 +1,23 @@
-from ..models.project import Project
+from typing import TYPE_CHECKING
+
 from ..models.freelancer import Freelancer
-from ..utils import validators as val
 from ..utils import helper_functions
-from ..models.freelancemaneger import FreelanceManager
+
+if TYPE_CHECKING:
+    from ..models.freelancemaneger import FreelanceManager
 
 
 class FreelancerMenu:
 
-    def __init__(self, freelancer:Freelancer, manager:FreelanceManager):
+    def __init__(
+        self,
+        freelancer: Freelancer,
+        manager: "FreelanceManager"
+    ):
         self.freelancer = freelancer
         self.manager = manager
 
+  
     def show_menu(self):
 
         while True:
@@ -28,7 +35,10 @@ class FreelancerMenu:
             print("8. Logout")
             print("=================================")
 
-            choice = helper_functions.get_menu_choice(1, 8)
+            choice = helper_functions.get_menu_choice(
+                1,
+                8
+            )
 
             if choice == 1:
                 self.view_assigned_projects()
@@ -40,7 +50,7 @@ class FreelancerMenu:
                 self.view_and_respond_to_requests()
 
             elif choice == 4:
-                self.view_messages() #pass 
+                self.view_messages()
 
             elif choice == 5:
                 self.financial_report()
@@ -52,77 +62,200 @@ class FreelancerMenu:
                 self.edit_profile()
 
             elif choice == 8:
+
                 print("Logged out successfully.")
                 break
 
+   
     def view_assigned_projects(self):
+
+        print("\n========== ASSIGNED PROJECTS ==========")
+
+        if not self.freelancer.assigned_projects:
+
+            print("No assigned projects.")
+            return
+
         for project in self.freelancer.assigned_projects:
-            print(f"Project ID: {project.project_id}, Title: {project.title}, Status: {project.status}")
-        
-        
+
+            print(
+                f"Project ID: {project.id}"
+            )
+
+            print(
+                f"Title: {project.title}"
+            )
+
+            print(
+                f"Status: {project.status}"
+            )
+
+            print("----------------------------------")
+
+  
     def update_milestone_status(self):
-        
-        project = self.freelancer.get_project_by_id(input("Enter project ID: "))
+
+        if not self.freelancer.assigned_projects:
+
+            print("You have no assigned projects.")
+            return
+
+        project_id = input(
+            "Enter project ID: "
+        ).strip()
+
+        project = self.freelancer.get_project_by_id(
+            project_id
+        )
+
         if project is None:
+
             print("Project ID not found.")
+            return
 
-        else:
-            project.print_milestones()
+        if not project.milestones:
 
-            milestone_choice = helper_functions.get_menu_choice(1, len(project.milestones),"Choose milestone to update")
+            print("This project has no milestones.")
+            return
 
-            current_milestone = project.milestones[milestone_choice - 1]
-            new_status = helper_functions.get_new_milestone_status()
-            current_milestone.update_status(new_status)
-            project.update_project_status()
-            self.freelancer.save_updated_project(project)  
-            self.manager.save_users()  
-            
-    def view_and_respond_to_requests(self):
-        pending_requests = [
-            request for request in self.freelancer.received_requests
-            if request["status"] == "pending"
+        print(
+            f"\nProject: {project.title}"
+        )
+
+        project.print_milestones()
+
+        milestone_choice = helper_functions.get_menu_choice(
+            1,
+            len(project.milestones),
+            "Choose milestone to update "
+        )
+
+        current_milestone = project.milestones[
+            milestone_choice - 1
         ]
 
+        print(
+            f"\nCurrent status: "
+            f"{current_milestone.status}"
+        )
+
+        new_status = (
+            helper_functions
+            .get_new_milestone_status()
+        )
+
+        current_milestone.update_status(
+            new_status
+        )
+
+        # Update project status
+        project.update_project_status()
+
+        # Save changes
+        self.manager.save_users()
+
+        print(
+            "\nMilestone updated successfully."
+        )
+
+        print(
+            f"Project status: {project.status}"
+        )
+
+  
+    def view_and_respond_to_requests(self):
+
+        pending_requests = (
+            self.freelancer.get_pending_requests()
+        )
+
         if not pending_requests:
+
             print("No pending requests.")
             return
 
+        print(
+            "\n========== PROJECT REQUESTS =========="
+        )
+
         for request in pending_requests:
+
+            client = request.get("client")
+            project = request.get("project")
+
             print(
-                f"Request from Client: {request['client'].name}, "
-                f"Project: {request['project'].title}, "
-                f"Message: {request['message']}"
+                f"\nClient: {client.name}"
+            )
+
+            print(
+                f"Project: {project.title}"
+            )
+
+            print(
+                f"Message: "
+                f"{request.get('message', '')}"
             )
 
             decision = input(
-                "Do you want to accept or reject request (accept/reject): "
+                "\nAccept or reject? "
             ).strip().lower()
 
-            while decision not in ["accept", "reject"]:
+            while decision not in [
+                "accept",
+                "reject"
+            ]:
+
                 decision = input(
-                    "Invalid choice. Please choose 'accept' or 'reject': "
+                    "Please enter accept or reject: "
                 ).strip().lower()
 
             if decision == "accept":
-                self.freelancer.assign_project(request["project"])
-                request["status"] = "accepted"
-                print("Request accepted and project assigned.")
+
+                success = (
+                    self.freelancer
+                    .assign_project(project)
+                )
+
+                if success:
+
+                    request["status"] = "accepted"
+
+                    print(
+                        "Request accepted "
+                        "and project assigned."
+                    )
+
             else:
+
                 request["status"] = "rejected"
-                print("Request rejected.")
-            self.manager.save_users()  
+
+                print(
+                    "Request rejected."
+                )
+
+            self.manager.save_users()
+
+  
     def view_messages(self):
-        pass
+
+        print("\n========== MESSAGES ==========")
+        print("No messages yet.")
+
+  
     def financial_report(self):
-        print("========== FINANCIAL REPORT ==========")
+
+        print(
+            "\n========== FINANCIAL REPORT =========="
+        )
 
         invoiced_projects = [
-            project for project in self.freelancer.assigned_projects
+            project
+            for project in self.freelancer.assigned_projects
             if project.invoice is not None
         ]
 
         if not invoiced_projects:
+
             print("No invoices yet.")
             return
 
@@ -131,27 +264,85 @@ class FreelancerMenu:
         total_earnings = 0
 
         for project in invoiced_projects:
+
             invoice = project.invoice
 
-            print(f"\nProject: {project.title}")
-            print(f"  Invoice ID: {invoice.invoice_id}")
-            print(f"  Status: {invoice.status}")
-            print(f"  Total Amount: ${invoice.amount:.2f}")
-            print(f"  Platform Commission: ${invoice.platform_commission:.2f}")
-            print(f"  Net Earnings: ${invoice.freelancer_earnings:.2f}")
+            print(
+                f"\nProject: {project.title}"
+            )
+
+            print(
+                f"Invoice ID: "
+                f"{invoice.invoice_id}"
+            )
+
+            print(
+                f"Status: "
+                f"{invoice.status}"
+            )
+
+            print(
+                f"Total Amount: "
+                f"${invoice.amount:.2f}"
+            )
+
+            print(
+                f"Platform Commission: "
+                f"${invoice.platform_commission:.2f}"
+            )
+
+            print(
+                f"Net Earnings: "
+                f"${invoice.freelancer_earnings:.2f}"
+            )
 
             total_amount += invoice.amount
-            total_commission += invoice.platform_commission
-            total_earnings += invoice.freelancer_earnings
+            total_commission += (
+                invoice.platform_commission
+            )
+            total_earnings += (
+                invoice.freelancer_earnings
+            )
 
-        print("\n========== SUMMARY ==========")
-        print(f"Total Projects: {len(invoiced_projects)}")
-        print(f"Total Amount Invoiced: ${total_amount:.2f}")
-        print(f"Total Commission Deducted: ${total_commission:.2f}")
-        print(f"Total Net Earnings: ${total_earnings:.2f}")
+        print(
+            "\n========== SUMMARY =========="
+        )
 
+        print(
+            f"Total Projects: "
+            f"{len(invoiced_projects)}"
+        )
+
+        print(
+            f"Total Amount Invoiced: "
+            f"${total_amount:.2f}"
+        )
+
+        print(
+            f"Total Commission Deducted: "
+            f"${total_commission:.2f}"
+        )
+
+        print(
+            f"Total Net Earnings: "
+            f"${total_earnings:.2f}"
+        )
+
+   
     def view_profile(self):
+
+        print(
+            "\n========== PROFILE =========="
+        )
+
         self.freelancer.display_profile()
 
     def edit_profile(self):
-        pass
+
+        print(
+            "\n========== EDIT PROFILE =========="
+        )
+
+        print(
+            "Edit profile feature is not implemented yet."
+        )
