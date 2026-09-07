@@ -122,6 +122,7 @@ class ClientMenu:
         print("3. freelancers by project count done")
         
         choice = helper_functions.get_menu_choice(1, 3)
+        freelancers = None
         if choice == 1:
             freelancers = [
                 user
@@ -143,7 +144,7 @@ class ClientMenu:
             ]
             freelancers.sort(key=lambda x: len(x.projects_done), reverse=True)
 
-        if not freelancers:
+        if freelancers is None:
             print("No freelancers found")
             return
 

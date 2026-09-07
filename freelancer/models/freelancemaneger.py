@@ -1,5 +1,5 @@
 import json
-from .client import Client
+from client import Client
 from .freelancer import Freelancer
 from .project import Project
 from .invoice import Invoice
@@ -49,7 +49,7 @@ class FreelanceManager:
 
         user = self.users[user_id]
 
-        if validators.check_password(password):
+        if validators.check_password(user,password):
             print("Login success")
         else:
             print("Wrong password.")
