@@ -11,7 +11,7 @@ The system allows two main user types to interact with the platform:
 - Client: creates projects, searches for freelancers, sends requests, tracks milestones, and manages invoices.
 - Freelancer: registers skills, receives project requests, accepts or rejects work, updates milestone progress, and reviews financial summaries.
 
-The app uses a simple in-memory/user-file model with JSON persistence through a `data.jsonl` file.
+The app uses a simple in-memory/user-file model with JSON persistence through a `data.json` file.
 
 ## Main Features
 
@@ -19,18 +19,18 @@ The app uses a simple in-memory/user-file model with JSON persistence through a 
 - Register as a client
 - Register as a freelancer
 - Login with a user ID and password
-- Basic validation for phone numbers and password strength
+- Basic validation for email and password strength
 
 ### 2. Client-side project management
 - Create project records
 - Set project title, budget, deadline, and milestones
 - View created projects
 - Delete projects
-- Search freelancers by name/skill
+- Search freelancers by name/skill/projects_completed
 
 ### 3. Freelancer discovery and requests
 - Client can browse freelancers
-- Search by all freelancers or by skill
+- Search by all freelancers or by skill 
 - Send a project request to a selected freelancer
 - Freelancer can view and accept or reject incoming requests
 
@@ -45,7 +45,7 @@ The app uses a simple in-memory/user-file model with JSON persistence through a 
 - Review a basic financial report for assigned projects
 
 ### 6. Messaging / communication flow
-- The project includes message and request structures for communication between clients and freelancers.
+- The project includes request structures for communication between clients and freelancers.
 - Messages and requests are stored within user data structures and can be viewed from the menus.
 
 ## Project Structure
@@ -54,28 +54,23 @@ The app uses a simple in-memory/user-file model with JSON persistence through a 
 freelancer/
 ├── main.py                 # App entry point
 ├── README.md               # Project documentation
-├── test_client.py          # Quick sample usage for Client and Project
+Project
 ├── models/
 │   ├── client.py           # Client model
 │   ├── freelancer.py       # Freelancer model
 │   ├── freelancemaneger.py # Central app manager
 │   ├── invoice.py          # Invoice logic
-│   ├── message.py          # Message model
 │   ├── milestone.py        # Milestone tracking
 │   ├── project.py          # Project model
-│   ├── proposal.py         # Proposal-related model
-│   ├── payment.py          # Payment model
 │   ├── user.py             # Shared user base class
-│   └── __pycache__/
 ├── menus/
-│   ├── AdminMenu.py        # Admin menu placeholder
 │   ├── client_menu.py      # Client operations menu
 │   ├── freelancer_menu.py  # Freelancer operations menu
 │   └── main_menu.py        # Login/registration entry menu
 ├── utils/
 │   ├── helper_functions.py # Shared helper methods
 │   └── validators.py       # Input validation rules
-└── data.jsonl              # Persistent user data file generated at runtime
+└── data.json             # Persistent user data file generated at runtime
 ```
 
 ## Core Classes
@@ -164,17 +159,13 @@ python -m freelancer.main
 
 This starts the interactive menu system.
 
-If you are already inside the `freelancer` folder, the project is structured to be launched with the package-style module entry point as well:
+If you are already inside the `freelancer` folder, the project is structured to be launched with the package-style module entry point as well
 
-```bash
-python -m main
-```
-
-Note: Because this project uses relative imports, the module-style launch is the safest option.
+Because this project uses relative imports, the module-style launch is the safest option.
 
 ## Data Storage
 
-The app stores user records in a file named `data.jsonl` in the working directory.
+The app stores user records in a file named `data.json` in the working directory.
 
 Each record is saved as a JSON object representing a client or freelancer. This makes it easy to persist user information between sessions.
 
@@ -190,28 +181,6 @@ Client signs up
     -> invoice is generated
     -> financial report is reviewed
 ```
-
-## Notes and Current Status
-
-This project is a prototype/educational CLI application. Some modules are still under development and the codebase contains a few rough edges, including some incomplete or inconsistent class relationships.
-
-The project is best viewed as a foundation for a freelance platform workflow rather than a production-ready system.
-
-## Future Improvements
-
-Possible enhancements for a more complete version:
-- better user authentication and password hashing
-- database integration instead of JSON files
-- real messaging system with chat history
-- project approval/rejection logic
-- admin dashboard
-- payment processing
-- reports and analytics
-- web/interface upgrade
-
-## License
-
-This project does not include a formal license file yet. It should be treated as a course/project codebase unless the project owner adds a license later.
 
 ## Summary
 
