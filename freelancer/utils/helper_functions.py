@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
-
-from freelancerV2.Sumsung_ch3_Project.freelancer.models.milestone import Milestone
+from ..models.milestone import Milestone
 
 if TYPE_CHECKING:
     from freelancer.models.freelancer import Freelancer

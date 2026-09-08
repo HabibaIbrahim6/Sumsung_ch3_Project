@@ -105,7 +105,7 @@ class Freelancer(User):
 
             data["received_requests"].append({
                 "project_id": project.id if project else None,
-                "client_id": client.user_id if client else None,
+                "client_id": client.id if client else None,
                 "message": request.get("message", ""),
                 "status": request.get("status", "pending")
             })

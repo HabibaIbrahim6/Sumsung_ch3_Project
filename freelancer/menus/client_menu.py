@@ -127,6 +127,9 @@ class ClientMenu:
         # Add project to client
         self.client.add_project(project)
 
+        # Add project to manager
+        self.manager.add_project(project)
+
         # Save data
         self.manager.save_users()
 
