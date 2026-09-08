@@ -31,15 +31,14 @@ class ClientMenu:
             print("3. Search Freelancers")
             print("4. Send Project Request")
             print("5. View Sent Requests")
-            print("6. View Messages")
-            print("7. View Profile")
-            print("8. Update Milestones")
-            print("9. Generate Invoice")
-            print("10. Delete Project")
-            print("11. Logout")
+            print("6. View Profile")
+            print("7. Update Milestones")
+            print("8. Generate Invoice")
+            print("9. Delete Project")
+            print("10. Logout")
             print("=================================")
 
-            choice = helper_functions.get_menu_choice(1, 11)
+            choice = helper_functions.get_menu_choice(1, 10)
 
             if choice == 1:
                 self.create_project()
@@ -57,24 +56,20 @@ class ClientMenu:
                 self.view_requests()
 
             elif choice == 6:
-                self.view_messages()
-
-            elif choice == 7:
                 self.view_profile()
 
-            elif choice == 8:
+            elif choice == 7:
                 self.update_milestones()
 
-            elif choice == 9:
+            elif choice == 8:
                 self.generate_invoice()
 
-            elif choice == 10:
+            elif choice == 9:
                 self.delete_project()
 
-            elif choice == 11:
+            elif choice == 10:
                 print("Logged out successfully.")
                 break
-
 
     def create_project(self):
 
@@ -275,13 +270,6 @@ class ClientMenu:
         print("\n========== SENT REQUESTS ==========")
 
         self.client.view_requests()
-
-    
-    def view_messages(self):
-
-        print("\n========== MESSAGES ==========")
-
-        self.client.view_messages()
 
    
     def view_profile(self):

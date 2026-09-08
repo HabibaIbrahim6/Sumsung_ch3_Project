@@ -8,9 +8,7 @@ class Client(User):
 
         self.projects_created = []
         self.sent_requests = []
-        self.messages = []
 
-   
     def add_project(self, project):
         if not isinstance(project, Project):
             raise TypeError("project must be a Project object.")
@@ -88,26 +86,7 @@ class Client(User):
         for request in self.sent_requests:
             print(request)
 
-    def add_message(self, message):
-        self.messages.append(message)
 
-        print("Message received successfully.")
-
-        return message
-    
-    def get_messages(self):
-        return self.messages
-
-    def view_messages(self):
-
-        if not self.messages:
-            print("No messages yet.")
-            return
-
-        print("========== MESSAGES ==========")
-
-        for message in self.messages:
-            print(message)
 
     def display_profile(self):
         super().display_profile()
