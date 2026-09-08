@@ -4,25 +4,13 @@ from .project import Project
 class Client(User):
 
     def __init__(self, user_id, name, email, password):
-        super().__init__(
-            user_id,
-            name,
-            email,
-            password,
-            "Client"
-        )
+        super().__init__(user_id,name,email,password,"Client")
 
-        # Projects created by this client
         self.projects_created = []
-
-        # Project requests sent to freelancers
         self.sent_requests = []
-
-        # Messages received from freelancers
         self.messages = []
 
    
-
     def add_project(self, project):
         if not isinstance(project, Project):
             raise TypeError("project must be a Project object.")
@@ -36,23 +24,18 @@ class Client(User):
 
         return project
     
-    
-    # display all projects created by the client 
     def view_projects(self):
         
         if not self.projects_created:
             print("No projects created yet.")
             return
 
-        print("\n========== MY PROJECTS ==========")
+        print("========== MY PROJECTS ==========")
 
         for project in self.projects_created:
             print(project)
 
     def get_project_by_id(self, project_id) -> "Project | None":
-        """
-        Find a project using its ID.
-        """
 
         for project in self.projects_created:
 
@@ -83,14 +66,10 @@ class Client(User):
 
         return request
     
-    # return all requests sent by the client
     def get_requests(self):
         return self.sent_requests
 
     def get_request_by_id(self, request_id):
-        """
-        Find a request using its ID.
-        """
 
         for request in self.sent_requests:
 
@@ -99,7 +78,6 @@ class Client(User):
 
         return None
 
-    #display all requests sent by the client
     def view_requests(self):
         if not self.sent_requests:
             print("No project requests sent yet.")
@@ -110,7 +88,6 @@ class Client(User):
         for request in self.sent_requests:
             print(request)
 
-    # Add a message to the client's messages list
     def add_message(self, message):
         self.messages.append(message)
 
@@ -118,45 +95,30 @@ class Client(User):
 
         return message
     
-    # return all messages received by the client
     def get_messages(self):
         return self.messages
 
     def view_messages(self):
-        """
-        Display all messages received by the client.
-        """
 
         if not self.messages:
             print("No messages yet.")
             return
 
-        print("\n========== MESSAGES ==========")
+        print("========== MESSAGES ==========")
 
         for message in self.messages:
             print(message)
 
-   
-   # display the client's profile information, including the number of projects created, requests sent, and messages received
     def display_profile(self):
         super().display_profile()
 
-        print(
-            f"Projects Created: "
-            f"{len(self.projects_created)}"
-        )
+        print(f"Projects Created: {len(self.projects_created)}")
 
-        print(
-            f"Sent Requests: "
-            f"{len(self.sent_requests)}"
-        )
+        print(f"Sent Requests: {len(self.sent_requests)}")
 
-        print(
-            f"Messages: "
-            f"{len(self.messages)}"
-        )
+        print(f"Messages: {len(self.messages)}")
 
-    # Save the client's data to a dictionary for serialization
+    
     def to_dict(self):
         return {
             "user_id": self.id,
@@ -165,10 +127,7 @@ class Client(User):
             "password": self.password,
             "role": self.role,
 
-            "projects_created": [
-                project.to_dict()
-                for project in self.projects_created
-            ],
+            "projects_created": [project.to_dict()for project in self.projects_created],
 
             "sent_requests": [],
 
@@ -177,7 +136,6 @@ class Client(User):
 
     @classmethod
     def from_dict(cls, user_id, data):
-
         client = cls(
             user_id,
             data["name"],
@@ -185,16 +143,9 @@ class Client(User):
             data["password"]
         )
 
-        # Restore client's projects
-        for project_data in data.get(
-            "projects_created",
-            []
-        ):
+        for project_data in data.get("projects_created",[]):
 
-            project = Project.from_dict(
-                project_data,
-                client
-            )
+            project = Project.from_dict(project_data,client)
 
             client.projects_created.append(project)
 
