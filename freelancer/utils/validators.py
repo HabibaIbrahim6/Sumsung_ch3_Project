@@ -5,7 +5,6 @@ from datetime import datetime
 
 EMAIL_PATTERN = re.compile(r"^[\w.]+@(gmail|yahoo)\.com$")
 PASSWORD_PATTERN = re.compile(r"^(?=.*\d)(?=.*[!@#$%^&*]).{9,}$")
-DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 PHONE_PATTERN = re.compile(r"01[0125]\d{8}")
 
 
@@ -20,24 +19,6 @@ def is_valid_password(password):
 
 def check_password(self, password):
         return self.password == password
-
-# مبنستخدمهمش ..
-def is_valid_phone(phone):
-    return bool(PHONE_PATTERN.fullmatch(phone))
-
-def is_valid_date(date):
-    if not DATE_PATTERN.fullmatch(date):
-        return False
-
-    try:
-        datetime.strptime(date, "%d/%m/%Y")
-        return True
-
-    except ValueError:
-        return False
-
-
-from datetime import datetime
 
 
 def get_valid_deadline(message):
