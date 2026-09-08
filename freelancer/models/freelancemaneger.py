@@ -52,7 +52,7 @@ class FreelanceManager:
             self.rebuild_relationships()
 
         except FileNotFoundError:
-            print("data.jsonl not found. Starting with empty system.")
+            print("data.json not found. Starting with empty system.")
 
     def rebuild_relationships(self):
 
@@ -131,43 +131,31 @@ class FreelanceManager:
         try:
 
             for user in self.users.values():
-
                 user_data = user.to_dict()
-
-                # Check that the data can be converted to JSON
                 json.dumps(user_data)
-
                 data.append(user_data)
 
         except Exception as error:
 
             print("\nERROR: Could not save data.")
             print(f"Reason: {error}")
-            print("The existing data.jsonl file was NOT changed.")
+            print("The existing data.json file was NOT changed.")
 
             return False
 
         try:
 
-            with open(
-                "data.jsonl",
-                "w",
-                encoding="utf-8"
-            ) as file:
-
+            with open("data.json","w",encoding="utf-8") as file:
                 for user_data in data:
-                    file.write(
-                        json.dumps(user_data) + "\n"
-                    )
-
+                    file.write(json.dumps(user_data) + "\n")
             return True
 
-        except OSError as error:
+        except Exception as error:
 
             print("\nERROR: Could not write data.jsonl.")
             print(f"Reason: {error}")
 
-            return False
+            
 
     def login(self, user_id, password):
 
@@ -187,81 +175,39 @@ class FreelanceManager:
 
         if isinstance(user, Client):
 
-            client_menu = ClientMenu(
-                user,
-                self
-            )
-
+            client_menu = ClientMenu(user,self)
             client_menu.show_menu()
 
         elif isinstance(user, Freelancer):
 
-            freelancer_menu = FreelancerMenu(
-                user,
-                self
-            )
-
+            freelancer_menu = FreelancerMenu(user,self)
             freelancer_menu.show_menu()
 
-        return user
+        
 
-    def register_client(
-        self,
-        name,
-        email,
-        password
-    ):
+    def register_client(self,name,email,password):
 
-        user_id = helper_functions.generate_id(
-            "C",
-            len(self.users) + 1
-        )
+        user_id = helper_functions.generate_id("C",len(self.users) + 1)
 
-        client = Client(
-            user_id,
-            name,
-            email,
-            password
-        )
+        client = Client(user_id,name,email,password)
 
         self.users[user_id] = client
 
         if not self.save_users():
-
             del self.users[user_id]
-
-            print(
-                "Registration failed because "
-                "the data could not be saved."
-            )
+            print("Registration failed because ","the data could not be saved.")
 
             return None
 
         print("\nRegistered successfully.")
-        print(f"Your User ID is: {user_id}")
-
+        print(f"Your ID is: {user_id}")
         return client
 
-    def register_freelancer(
-        self,
-        name,
-        email,
-        password,
-        skills
-    ):
+    def register_freelancer(self,name,email,password,skills):
 
-        user_id = helper_functions.generate_id(
-            "F",
-            len(self.users) + 1
-        )
+        user_id = helper_functions.generate_id("F",len(self.users) + 1)
 
-        freelancer = Freelancer(
-            user_id,
-            name,
-            email,
-            password,
-            skills
-        )
+        freelancer = Freelancer(user_id,name,email,password,skills)
 
         self.users[user_id] = freelancer
 
@@ -269,10 +215,7 @@ class FreelanceManager:
 
             del self.users[user_id]
 
-            print(
-                "Registration failed because "
-                "the data could not be saved."
-            )
+            print("Registration failed because ","the data could not be saved ")
 
             return None
 

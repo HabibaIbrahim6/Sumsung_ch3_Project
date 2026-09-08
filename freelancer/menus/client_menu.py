@@ -6,7 +6,7 @@ from ..models.client import Client
 from ..utils import validators as val
 from ..utils import helper_functions
 
-# use TYPE_CHECKING to avoid circular imports
+
 if TYPE_CHECKING:
     from ..models.freelancemaneger import FreelanceManager
 
@@ -78,26 +78,17 @@ class ClientMenu:
 
     def create_project(self):
 
-        print("\n========== CREATE PROJECT ==========")
+        print("========== CREATE PROJECT ==========")
 
-        project_id = helper_functions.generate_id(
-            "P",
-            len(self.client.projects_created) + 1
-        )
+        project_id = helper_functions.generate_id("P",len(self.client.projects_created) + 1)
 
         print(f"Generated Project ID: {project_id}")
 
-        title = val.get_valid_title(
-            "Enter project title: "
-        )
+        title = val.get_valid_title("Enter project title: ")
 
-        budget = val.get_valid_amount(
-            "Enter the project budget: "
-        )
+        budget = val.get_valid_amount("Enter the project budget:  ")
 
-        deadline = val.get_valid_deadline(
-            "Enter the project deadline YYYY-MM-DD: "
-        )
+        deadline = val.get_valid_deadline("Enter the project deadline YYYY-MM-DD:  ")
 
         milestones = helper_functions.get_milestones()
 
@@ -110,27 +101,20 @@ class ClientMenu:
             milestones
         )
 
-        # Create invoice
-        invoice_id = helper_functions.generate_id(
-            "INV",
-            len(self.client.projects_created) + 1
-        )
+        invoice_id = helper_functions.generate_id("INV",len(self.client.projects_created) + 1)
 
         invoice = Invoice(
             invoice_id,
             project_id,
             budget
         )
-
         project.add_invoice(invoice)
 
-        # Add project to client
         self.client.add_project(project)
 
-        # Add project to manager
+        
         self.manager.add_project(project)
 
-        # Save data
         self.manager.save_users()
 
         print("\nProject created successfully.")
@@ -337,13 +321,13 @@ class ClientMenu:
             "status": "pending"
         }
 
-        # Add request to freelancer
+        
         freelancer.add_request(request)
 
-        # Add request to client
+        
         self.client.add_request(request)
 
-        # Save
+        
         self.manager.save_users()
 
         print("\nProject request sent successfully.")

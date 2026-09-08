@@ -4,9 +4,6 @@ from ..models.milestone import Milestone
 if TYPE_CHECKING:
     from freelancer.models.freelancer import Freelancer
 
-
-
-
 def get_new_milestone_status():
     status_options = {
         "1": "Pending",
@@ -45,9 +42,7 @@ def get_milestone_choice(minimum , maximum):
 def get_menu_choice(minimum , maximum, message="Enter your choice "):
     while True:
         try:
-            choice = int(
-                input(message+f"({minimum}-{maximum}):")
-            )
+            choice = int(input(message+f"({minimum}-{maximum}):"))
         except ValueError:
             print("Please enter a number")
             continue
@@ -61,10 +56,7 @@ def generate_id(prefix,counter):
     return f"{prefix}{counter:03}"
 
 def get_milestones():
-    print(
-        "Enter at least one milestone, "
-        "enter 'EXIT' after finishing.\n"
-    )
+    print("Enter at least one milestone","enter 'EXIT' after finishing\n")
 
     milestones = []
 
@@ -81,26 +73,15 @@ def get_milestones():
             print("Please enter a milestone.")
             continue
 
-        if any(
-            milestone.title.lower() == title.lower()
-            for milestone in milestones
-        ):
+        if any(milestone.title.lower() == title.lower()for milestone in milestones):
             print("That milestone already exists. Try again.")
             continue
 
-        description = input(
-            "Milestone description: "
-        ).strip()
+        description = input("Milestone description: ").strip()
 
-        deadline = input(
-            "Milestone deadline DD/MM/YYYY: "
-        ).strip()
+        deadline = input("Milestone deadline DD/MM/YYYY: ").strip()
 
-        milestone = Milestone(
-            title,
-            description,
-            deadline
-        )
+        milestone = Milestone(title,description,deadline)
 
         milestones.append(milestone)
 
@@ -118,8 +99,6 @@ def print_menu(iterable):
         cnt += 1
         print(f"{cnt}) {project}")
 
-
-#=================== CLOSURE FUNCTION ===================
 
 def commission_rate(budget):
     if budget <= 500:

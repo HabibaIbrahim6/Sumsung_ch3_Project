@@ -22,14 +22,7 @@ def check_password(self, password):
         return self.password == password
 
 def is_valid_phone(phone):
-    """
-    Check if the phone number is a valid Egyptian mobile number.
-    """
     return bool(PHONE_PATTERN.fullmatch(phone))
-
-
-
-
 
 def is_valid_date(date):
     if not DATE_PATTERN.fullmatch(date):
@@ -53,10 +46,7 @@ def get_valid_deadline(message):
         date_input = input(message).strip()
 
         try:
-            deadline_date = datetime.strptime(
-                date_input,
-                "%d/%m/%Y"
-            )
+            deadline_date = datetime.strptime(date_input,"%d/%m/%Y")
 
             return deadline_date.strftime("%Y-%m-%d")
 

@@ -52,14 +52,13 @@ class FreelancerMenu:
                 self.edit_profile()
 
             elif choice == 8:
-
                 print("Logged out successfully.")
                 break
 
 
     def view_assigned_projects(self):
-        print("\n========== ASSIGNED PROJECTS ==========")
-# validate here
+        print("========== ASSIGNED PROJECTS ==========")
+
         if not self.freelancer.assigned_projects:
             print("No assigned projects.")
             return

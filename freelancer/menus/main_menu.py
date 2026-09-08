@@ -13,9 +13,6 @@ class MainMenu:
         self.manager = manager
 
     def show_menu(self):
-        """
-        Display the main menu of the system.
-        """
 
         while True:
 
@@ -40,7 +37,7 @@ class MainMenu:
                 self.register_freelancer_page()
 
             elif choice == 4:
-                print("\nThank you for using SIC Freelance Project Hub!")
+                print("Thank you for using SIC Freelance Project Hub!")
                 break
 
    
@@ -68,7 +65,7 @@ class MainMenu:
     
     def register_client_page(self):
 
-        print("\n====== REGISTER AS CLIENT ======")
+        print("====== REGISTER AS CLIENT ======")
 
         while True:
             name = input("Enter your name: ").strip()
@@ -76,12 +73,8 @@ class MainMenu:
                 break
             print("Name cannot be empty.")
 
-      
         while True:
-            # use str.strip() to remove leading and trailing spaces
-            email = input(
-                "Enter your email: "
-            ).strip()
+            email = input("Enter your email: ").strip()
 
             if val.is_valid_email(email):
                 break
@@ -98,22 +91,14 @@ class MainMenu:
             if val.is_valid_password(password):
                 break
 
-            print(
-                "\nInvalid password."
-                "\nPassword must:"
-                "\n- contain at least 9 characters"
-                "\n- contain at least one digit"
-                "\n- contain at least one special character"
-            )
+            print("Invalid password",
+                  "Password must:",
+                  "- contain at least 9 characters",
+                  "- contain at least one digit",
+                  "- contain at least one special character",)
 
-     
-        self.manager.register_client(
-            name,
-            email,
-            password
-        )
+        self.manager.register_client(name,email,password)
 
-  
     def register_freelancer_page(self):
 
         print("\n====== REGISTER AS FREELANCER ======")
@@ -128,9 +113,7 @@ class MainMenu:
 
         while True:
 
-            email = input(
-                "Enter your email: "
-            ).strip()
+            email = input("Enter your email: ").strip()
 
             if val.is_valid_email(email):
                 break
@@ -139,33 +122,24 @@ class MainMenu:
 
         while True:
 
-            password = input(
-                "Enter your password: "
-            ).strip()
+            password = input("Enter your password: ").strip()
 
             if val.is_valid_password(password):
                 break
 
-            print(
-                "\nInvalid password."
-                "\nPassword must:"
-                "\n- contain at least 9 characters"
-                "\n- contain at least one digit"
-                "\n- contain at least one special character"
-            )
+            print("Invalid password",
+                "Password must:",
+                "- contain at least 9 characters",
+                "- contain at least one digit",
+                "- contain at least one special character",)
+            
 
 
         while True:
 
-            skills_input = input(
-                "Enter your skills separated by comma (,): "
-            ).strip()
+            skills_input = input("Enter your skills separated by comma (,): ").strip()
 
-            skills = [
-                skill.strip()
-                for skill in skills_input.split(",")
-                if skill.strip()
-            ]
+            skills = [skill.strip()for skill in skills_input.split(",")if skill.strip()]
 
             if skills:
                 break
@@ -173,9 +147,4 @@ class MainMenu:
             print("Please enter at least one skill.")
 
      
-        self.manager.register_freelancer(
-            name,
-            email,
-            password,
-            skills
-        )
+        self.manager.register_freelancer( name,email,password,skills)

@@ -1,2 +1,0 @@
-class AdminMenu :
-    pass
