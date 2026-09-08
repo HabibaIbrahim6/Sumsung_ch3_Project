@@ -21,14 +21,13 @@ class FreelancerMenu:
             print("1. View Assigned Projects")
             print("2. Update Milestone Status")
             print("3. View & Respond to Requests")
-            print("4. View Messages")
-            print("5. Financial Report")
-            print("6. View Profile")
-            print("7. Edit Profile")
-            print("8. Logout")
+            print("4. Financial Report")
+            print("5. View Profile")
+            print("6. Edit Profile")
+            print("7. Logout")
             print("=================================")
 
-            choice = helper_functions.get_menu_choice(1, 8)
+            choice = helper_functions.get_menu_choice(1, 7)
 
             if choice == 1:
                 self.view_assigned_projects()
@@ -40,18 +39,15 @@ class FreelancerMenu:
                 self.view_and_respond_to_requests()
 
             elif choice == 4:
-                self.view_messages()
-
-            elif choice == 5:
                 self.financial_report()
 
-            elif choice == 6:
+            elif choice == 5:
                 self.view_profile()
 
-            elif choice == 7:
+            elif choice == 6:
                 self.edit_profile()
 
-            elif choice == 8:
+            elif choice == 7:
                 print("Logged out successfully.")
                 break
 
@@ -149,13 +145,6 @@ class FreelancerMenu:
                 print("Request rejected.")
 
             self.manager.save_users()
-
-  
-    def view_messages(self):
-
-        print("\n========== MESSAGES ==========")
-        print("No messages yet.")
-
   
     def financial_report(self):
 
