@@ -186,8 +186,8 @@ class FreelancerMenu:
             print(f"Net Earnings: ${invoice.freelancer_earnings:.2f}")
 
             total_amount += invoice.amount
-            total_commission += (invoice.platform_commission)
-            total_earnings += (invoice.freelancer_earnings)
+            total_commission += invoice.platform_commission
+            total_earnings += invoice.freelancer_earnings
 
         print("========== SUMMARY ==========")
 

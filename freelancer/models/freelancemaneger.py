@@ -168,13 +168,15 @@ class FreelanceManager:
 
             client_menu = ClientMenu(user,self)
             client_menu.show_menu()
+            return user
 
         elif isinstance(user, Freelancer):
 
             freelancer_menu = FreelancerMenu(user,self)
             freelancer_menu.show_menu()
+            return user
 
-        
+        return None
 
     def register_client(self,name,email,password):
 

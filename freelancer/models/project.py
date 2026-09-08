@@ -25,7 +25,7 @@ class Project:
         self.invoice = None
 
     def __str__(self):
-        return (f"Project ID: {self.id} Title: {self.title} Status: {self.status} ")
+        return f"Project ID: {self.id} Title: {self.title} Status: {self.status} "
 
     def update_project_status(self):
 

@@ -154,7 +154,7 @@ class ClientMenu:
 
             freelancers.sort(key=lambda freelancer: len(freelancer.get_completed_projects()),reverse=True)
 
-        if freelancers is None:
+        if not freelancers :
             print("No freelancers found")
             return
 
@@ -169,7 +169,7 @@ class ClientMenu:
             else:
                 skills_text = str(skills)
 
-            projects_done = len(getattr(freelancer.get_completed_projects()))
+            projects_done = len(freelancer.get_completed_projects()) #retuned the num of projects not the projects themselves
 
             print(
                 f"ID: {freelancer.id}\n"

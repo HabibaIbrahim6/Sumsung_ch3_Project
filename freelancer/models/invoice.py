@@ -6,7 +6,7 @@ class Invoice:
     def __init__(self, invoice_id, project_id, amount):
         self.invoice_id = invoice_id
         self.project_id = project_id
-        self.amount = amount
+        self.amount = int(amount)
         self.status = "unpaid"
 
         calculate_commission = commission_rate(amount)
