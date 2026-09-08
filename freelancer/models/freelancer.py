@@ -14,6 +14,7 @@ class Freelancer(User):
         self._assigned_project_ids = []
         self._received_request_data = []
 
+
     def display_profile(self):
         super().display_profile()
         print(f"Skills: {', '.join(self.skills)}")
@@ -52,7 +53,7 @@ class Freelancer(User):
         if request in self.received_requests:
             raise ValueError("This request already exists.")
         self.received_requests.append(request)
-        print("Project request added successfully.")
+        print("Project request added to received_requests ")
 
     def get_pending_requests(self):
         return [request for request in self.received_requests if request.get("status") == "pending"]
@@ -72,7 +73,7 @@ class Freelancer(User):
 
             data["received_requests"].append({
                 "project_id": project.id if project else None,  
-                "client_id": client.user_id if client else None,
+                "client_id": client.id if client else None,
                 "message": request.get("message", ""),
                 "status": request.get("status", "pending")
             })

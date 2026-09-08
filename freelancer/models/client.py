@@ -62,7 +62,7 @@ class Client(User):
 
         self.sent_requests.append(request)
 
-        print("Project request added successfully.")
+        print("Project request added to client history")
 
         return request
     

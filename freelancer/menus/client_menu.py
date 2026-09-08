@@ -88,7 +88,7 @@ class ClientMenu:
 
         budget = val.get_valid_amount("Enter the project budget:  ")
 
-        deadline = val.get_valid_deadline("Enter the project deadline YYYY-MM-DD:  ")
+        deadline = val.get_valid_deadline("Enter the project deadline DD/MM/YYYY:  ")
 
         milestones = helper_functions.get_milestones()
 
@@ -103,16 +103,11 @@ class ClientMenu:
 
         invoice_id = helper_functions.generate_id("INV",len(self.client.projects_created) + 1)
 
-        invoice = Invoice(
-            invoice_id,
-            project_id,
-            budget
-        )
+        invoice = Invoice(invoice_id,project_id,budget)
         project.add_invoice(invoice)
 
         self.client.add_project(project)
 
-        
         self.manager.add_project(project)
 
         self.manager.save_users()
@@ -124,7 +119,6 @@ class ClientMenu:
     def view_projects(self):
 
         print("\n========== MY PROJECTS ==========")
-
         self.client.view_projects()
 
  
@@ -140,77 +134,42 @@ class ClientMenu:
 
         freelancers = []
 
-      
         if choice == 1:
-
-            freelancers = [
-                user
-                for user in self.manager.users.values()
-                if user.role == "Freelancer"
-            ]
-
+            freelancers = [user for user in self.manager.users.values() if user.role == "Freelancer"]
 
         elif choice == 2:
 
-            skill = input(
-                "Enter skill to search for: "
-            ).strip()
+            skill = input("Enter skill to search for: ").strip()
 
             freelancers = [
                 user
                 for user in self.manager.users.values()
                 if user.role == "Freelancer"
-                and skill.lower() in [
-                    s.lower()
-                    for s in getattr(user, "skills", [])
+                and skill.lower() in [s.lower()for s in getattr(user, "skills", [])]
                 ]
-            ]
 
         elif choice == 3:
 
-            freelancers = [
-                user
-                for user in self.manager.users.values()
-                if user.role == "Freelancer"
-            ]
+            freelancers = [user for user in self.manager.users.values()if user.role == "Freelancer"]
 
-            freelancers.sort(
-                key=lambda freelancer: len(
-                    getattr(freelancer, "projects_done", [])
-                ),
-                reverse=True
-            )
-
-       
+            freelancers.sort(key=lambda freelancer: len(freelancer.get_completed_projects()),reverse=True)
 
         if freelancers is None:
             print("No freelancers found")
             return
 
-      
-
         print("\n========== SEARCH RESULTS ==========")
 
         for freelancer in freelancers:
 
-            skills = getattr(
-                freelancer,
-                "skills",
-                []
-            )
+            skills = getattr(freelancer,"skills",[])
 
             if isinstance(skills, list):
                 skills_text = ", ".join(skills)
             else:
                 skills_text = str(skills)
 
-            projects_done = len(
-                getattr(
-                    freelancer,
-                    "projects_done",
-                    []
-                )
-            )
+            projects_done = len(getattr(freelancer.get_completed_projects()))
 
             print(
                 f"ID: {freelancer.id}\n"
@@ -224,7 +183,7 @@ class ClientMenu:
 
     def send_project_request(self):
 
-        print("\n========== SEND PROJECT REQUEST ==========")
+        print("========== SEND PROJECT REQUEST ==========")
 
 
         if not self.client.projects_created:
@@ -238,13 +197,9 @@ class ClientMenu:
 
         self.client.view_projects()
 
-        project_id = input(
-            "\nEnter project ID: "
-        ).strip()
+        project_id = input("\nEnter project ID: ").strip()
 
-        project = self.client.get_project_by_id(
-            project_id
-        )
+        project = self.client.get_project_by_id(project_id)
 
         if project is None:
 
@@ -253,11 +208,7 @@ class ClientMenu:
             return
 
      
-        freelancers = [
-            user
-            for user in self.manager.users.values()
-            if user.role == "Freelancer"
-        ]
+        freelancers = [ user for user in self.manager.users.values() if user.role == "Freelancer" ]
 
         if not freelancers:
 
@@ -265,34 +216,26 @@ class ClientMenu:
 
             return
 
-        print("\n========== AVAILABLE FREELANCERS ==========")
+        print("========== AVAILABLE FREELANCERS ==========")
 
         for freelancer in freelancers:
 
-            skills = getattr(
-                freelancer,
-                "skills",
-                []
-            )
+            skills = getattr(freelancer,"skills",[])
 
             if isinstance(skills, list):
-                skills = ", ".join(skills)
+                skills = "- ".join(skills)
 
             print(
-                f"ID: {freelancer.id} | "
-                f"Name: {freelancer.name} | "
+                f"ID: {freelancer.id} - "
+                f"Name: {freelancer.name} -  "
                 f"Skills: {skills}"
             )
 
      
 
-        freelancer_id = input(
-            "\nEnter freelancer ID: "
-        ).strip()
+        freelancer_id = input("\nEnter freelancer ID: ").strip()
 
-        freelancer = self.manager.users.get(
-            freelancer_id
-        )
+        freelancer = self.manager.users.get(freelancer_id)
 
         if freelancer is None or freelancer.role != "Freelancer":
 
@@ -302,9 +245,7 @@ class ClientMenu:
 
        
 
-        message = input(
-            "Enter your message: "
-        ).strip()
+        message = input("Enter your message: ").strip()
 
         if not message:
 
@@ -320,14 +261,10 @@ class ClientMenu:
             "message": message,
             "status": "pending"
         }
-
-        
         freelancer.add_request(request)
 
-        
         self.client.add_request(request)
 
-        
         self.manager.save_users()
 
         print("\nProject request sent successfully.")

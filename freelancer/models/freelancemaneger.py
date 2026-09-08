@@ -18,42 +18,39 @@ class FreelanceManager:
 
     def load_users(self):
         try:
-            with open("data.jsonl", "r", encoding="utf-8") as file:
-                for line in file:
-                    line = line.strip()
-                    if not line:
-                        continue
-
-                    try:
-                        user_data = json.loads(line)
-                    except json.JSONDecodeError:
-                        print("Invalid JSON line, skipping...")
-                        continue
-
-                    if "user_id" not in user_data:
-                        print("User ID not found, skipping...")
-                        continue
-
-                    user_id = str(user_data["user_id"])
-                    role = user_data.get("role")
-
-                    if role == "Client":
-                        user = Client.from_dict(user_id, user_data)
-
-                    elif role == "Freelancer":
-                        user = Freelancer.from_dict(user_id, user_data)
-
-                    else:
-                        print(f"Unknown role for user {user_id}, skipping...")
-                        continue
-
-                    self.users[user_id] = user
-
-            self.rebuild_relationships()
+            with open("data.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
 
         except FileNotFoundError:
-            print("data.json not found. Starting with empty system.")
+            print("data.json not found")
+            return
 
+        except json.JSONDecodeError:
+            print("data.json is corrupted or invalid")
+            return
+
+        for user_data in data:
+
+            if "user_id" not in user_data:
+                print("User ID not found, skipping...")
+                continue
+
+            user_id = str(user_data["user_id"])
+            role = user_data.get("role")
+
+            if role == "Client":
+                user = Client.from_dict(user_id, user_data)
+
+            elif role == "Freelancer":
+                user = Freelancer.from_dict(user_id, user_data)
+
+            else:
+                print(f"Unknown role for user {user_id}, skipping...")
+                continue
+
+            self.users[user_id] = user
+
+        self.rebuild_relationships()
     def rebuild_relationships(self):
 
         self.projects = []
@@ -129,32 +126,26 @@ class FreelanceManager:
         data = []
 
         try:
-
             for user in self.users.values():
                 user_data = user.to_dict()
-                json.dumps(user_data)
+                json.dumps(user_data) 
                 data.append(user_data)
 
         except Exception as error:
-
             print("\nERROR: Could not save data.")
             print(f"Reason: {error}")
             print("The existing data.json file was NOT changed.")
-
             return False
 
         try:
-
-            with open("data.json","w",encoding="utf-8") as file:
-                for user_data in data:
-                    file.write(json.dumps(user_data) + "\n")
+            with open("data.json", "w", encoding="utf-8") as file:
+                json.dump(data, file, indent=2, ensure_ascii=False)
             return True
 
         except Exception as error:
-
-            print("\nERROR: Could not write data.jsonl.")
+            print("\nERROR: Could not write data.json.")
             print(f"Reason: {error}")
-
+            return False
             
 
     def login(self, user_id, password):

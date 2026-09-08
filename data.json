@@ -1,0 +1,175 @@
+[
+  {
+    "user_id": "C1",
+    "name": "Ahmed Hassan",
+    "email": "ahmed@example.com",
+    "password": "Passw0rd!",
+    "role": "Client",
+    "projects_created": [
+      {
+        "project_id": "P001",
+        "title": "E-commerce Website",
+        "budget": 3000,
+        "client": "C1",
+        "freelancer": "F001",
+        "status": "In Progress",
+        "deadline": "2026-12-01",
+        "milestones": [
+          {
+            "title": "Design mockups",
+            "description": "Homepage and product page mockups",
+            "status": "Completed",
+            "deadline": "2026-09-15"
+          },
+          {
+            "title": "Backend API",
+            "description": "Build product and order endpoints",
+            "status": "In Progress",
+            "deadline": "2026-10-15"
+          }
+        ],
+        "invoice": {
+          "invoice_id": "INV001",
+          "project_id": "P001",
+          "amount": 3000,
+          "status": "unpaid",
+          "platform_commission": 240.0,
+          "freelancer_earnings": 2760.0
+        }
+      }
+    ],
+    "sent_requests": [],
+    "messages": []
+  },
+  {
+    "user_id": "C2",
+    "name": "Sara Mostafa",
+    "email": "sara@example.com",
+    "password": "Sara2024#",
+    "role": "Client",
+    "projects_created": [
+      {
+        "project_id": "P002",
+        "title": "Logo Design",
+        "budget": 400,
+        "client": "C2",
+        "freelancer": null,
+        "status": "Open",
+        "deadline": "2026-10-01",
+        "milestones": [
+          {
+            "title": "Initial concepts",
+            "description": "Three logo concept drafts",
+            "status": "Pending",
+            "deadline": "2026-09-20"
+          }
+        ],
+        "invoice": null
+      }
+    ],
+    "sent_requests": [],
+    "messages": []
+  },
+  {
+    "user_id": "F001",
+    "name": "Mohamed Aly",
+    "email": "mohamed@example.com",
+    "password": "Dev12345$",
+    "role": "Freelancer",
+    "skills": [
+      "Python",
+      "Django",
+      "React"
+    ],
+    "assigned_projects": [
+      "P001"
+    ],
+    "received_requests": [
+      {
+        "project_id": "P001",
+        "client_id": "C1",
+        "message": "Looking for a full-stack dev for my store project.",
+        "status": "accepted"
+      }
+    ]
+  },
+  {
+    "user_id": "F002",
+    "name": "Nourhan Adel",
+    "email": "nourhan@example.com",
+    "password": "Code99!!x",
+    "role": "Freelancer",
+    "skills": [
+      "UI/UX",
+      "Figma"
+    ],
+    "assigned_projects": [],
+    "received_requests": [
+      {
+        "project_id": "P002",
+        "client_id": "C2",
+        "message": "Need a clean, modern logo for a new brand.",
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "user_id": "F005",
+    "name": "ahmed osama",
+    "email": "a7md@gmail.com",
+    "password": "123###aaa",
+    "role": "Freelancer",
+    "skills": [
+      "python",
+      "java",
+      "testing"
+    ],
+    "assigned_projects": [
+      "P001"
+    ],
+    "received_requests": [
+      {
+        "project_id": "P001",
+        "client_id": "C006",
+        "message": "hello ahmed i need u",
+        "status": "accepted"
+      }
+    ]
+  },
+  {
+    "user_id": "C006",
+    "name": "ahmed",
+    "email": "ahmed@yahoo.com",
+    "password": "123###aaa",
+    "role": "Client",
+    "projects_created": [
+      {
+        "project_id": "P001",
+        "title": "first",
+        "budget": 100.0,
+        "client": "C006",
+        "freelancer": "F005",
+        "status": "Completed",
+        "deadline": "2027-04-18",
+        "milestones": [
+          {
+            "title": "planning",
+            "description": "set a plan",
+            "status": "Completed",
+            "deadline": "1/1/2027"
+          }
+        ],
+        "invoice": {
+          "invoice_id": "INV001",
+          "project_id": "P001",
+          "amount": 100.0,
+          "status": "unpaid",
+          "platform_commission": 5.0,
+          "freelancer_earnings": 95.0
+        }
+      }
+    ],
+    "sent_requests": [],
+    "messages": []
+  }
+]
