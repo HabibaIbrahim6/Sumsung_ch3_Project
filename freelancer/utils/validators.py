@@ -21,6 +21,7 @@ def is_valid_password(password):
 def check_password(self, password):
         return self.password == password
 
+# مبنستخدمهمش ..
 def is_valid_phone(phone):
     return bool(PHONE_PATTERN.fullmatch(phone))
 
