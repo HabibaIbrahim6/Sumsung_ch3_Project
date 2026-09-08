@@ -75,6 +75,7 @@ class Project:
             "deadline": self.deadline,
             "milestones": [ milestone.to_dict() for milestone in self.milestones ],
             "invoice": (self.invoice.to_dict() if self.invoice else None)
+        }
     @classmethod
     def from_dict(cls,project_data,client=None,freelancer=None):
 
