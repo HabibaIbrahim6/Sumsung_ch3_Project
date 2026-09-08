@@ -25,27 +25,17 @@ class Project:
         self.invoice = None
 
     def __str__(self):
-        return (
-            f"Project ID: {self.id}, "
-            f"Title: {self.title}, "
-            f"Status: {self.status}"
-        )
+        return (f"Project ID: {self.id} Title: {self.title} Status: {self.status} ")
 
     def update_project_status(self):
 
         if not self.milestones:
             return
 
-        if all(
-            milestone.status == "Completed"
-            for milestone in self.milestones
-        ):
+        if all(milestone.status == "Completed" for milestone in self.milestones):
             self.status = "Completed"
 
-        elif any(
-            milestone.status != "Pending"
-            for milestone in self.milestones
-        ):
+        elif any(milestone.status != "Pending" for milestone in self.milestones):
             self.status = "In Progress"
 
         else:
@@ -67,9 +57,7 @@ class Project:
     def add_invoice(self, invoice):
 
         if not isinstance(invoice, Invoice):
-            raise TypeError(
-                "invoice must be an Invoice object."
-            )
+            raise TypeError("invoice must be an Invoice object.")
 
         self.invoice = invoice
 
@@ -85,37 +73,17 @@ class Project:
             if self.freelancer else None,
             "status": self.status,
             "deadline": self.deadline,
-            "milestones": [
-                milestone.to_dict()
-                for milestone in self.milestones
-            ],
-            "invoice": (
-                self.invoice.to_dict()
-                if self.invoice
-                else None
-            )
-        }
-
+            "milestones": [ milestone.to_dict() for milestone in self.milestones ],
+            "invoice": (self.invoice.to_dict() if self.invoice else None)
     @classmethod
-    def from_dict(
-        cls,
-        project_data,
-        client=None,
-        freelancer=None
-    ):
+    def from_dict(cls,project_data,client=None,freelancer=None):
 
-        milestones = [
-            Milestone.from_dict(milestone_data)
-            for milestone_data
-            in project_data.get("milestones", [])
-        ]
+        milestones = [ Milestone.from_dict(milestone_data) for milestone_data in project_data.get("milestones", []) ]
 
         invoice = None
 
         if project_data.get("invoice"):
-            invoice = Invoice.from_dict(
-                project_data["invoice"]
-            )
+            invoice = Invoice.from_dict(project_data["invoice"])
 
         project = cls(
             project_id=project_data["project_id"],
@@ -128,10 +96,7 @@ class Project:
 
         project.freelancer = freelancer
 
-        project.status = project_data.get(
-            "status",
-            "Open"
-        )
+        project.status = project_data.get("status","Open")
 
         project.invoice = invoice
 
