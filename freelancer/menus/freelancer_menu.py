@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from ..models.freelancer import Freelancer
 from ..utils import helper_functions
-
+from ..utils import validators as val
 if TYPE_CHECKING:
     from ..models.freelancemaneger import FreelanceManager
 
@@ -205,5 +205,64 @@ class FreelancerMenu:
         self.freelancer.display_profile()
 
     def edit_profile(self):
-        print("========== EDIT PROFILE ==========")
-        print("Edit profile feature is not implemented yet.")
+        print("\n========== EDIT PROFILE ==========")
+        print("1. Edit Name")
+        print("2. Edit Email")
+        print("3. Edit Password")
+        print("4. Edit Skills")
+        print("5. Cancel")
+
+        choice = helper_functions.get_menu_choice(1, 5)
+
+        if choice == 1:
+            new_name = input("Enter new name: ").strip()
+
+            if not new_name:
+                print("Name cannot be empty.")
+                return
+
+            self.freelancer.name = new_name
+            print("Name updated.")
+
+        elif choice == 2:
+            new_email = input("Enter new email: ").strip()
+
+            if not val.is_valid_email(new_email):
+                print("Invalid email format.")
+                return
+
+            self.freelancer.email = new_email
+            print("Email updated.")
+
+        elif choice == 3:
+            new_password = input("Enter new password: ").strip()
+
+            if not val.is_valid_password(new_password):
+                print(
+                    "Invalid password."
+                    "\nPassword must:"
+                    "\n- contain at least 9 characters"
+                    "\n- contain at least one digit"
+                    "\n- contain at least one special character"
+                )
+                return
+
+            self.freelancer.password = new_password
+            print("Password updated.")
+
+        elif choice == 4:
+            skills_input = input("Enter skills separated by comma (,): ").strip()
+
+            new_skills = [skill.strip() for skill in skills_input.split(",") if skill.strip()]
+
+            if not new_skills:
+                print("Please enter at least one skill.")
+                return
+
+            self.freelancer.skills = new_skills
+            print("Skills updated.")
+
+        else:
+            return
+
+        self.manager.save_users()
