@@ -11,7 +11,7 @@
         "title": "E-commerce Website",
         "budget": 3000,
         "client": "C1",
-        "freelancer": "F001",
+        "freelancer": "F005",
         "status": "In Progress",
         "deadline": "2026-12-01",
         "milestones": [
@@ -31,7 +31,7 @@
         "invoice": {
           "invoice_id": "INV001",
           "project_id": "P001",
-          "amount": 3000,
+          "amount": 3000.0,
           "status": "unpaid",
           "platform_commission": 240.0,
           "freelancer_earnings": 2760.0
@@ -148,7 +148,7 @@
         "title": "first",
         "budget": 100.0,
         "client": "C006",
-        "freelancer": "F005",
+        "freelancer": null,
         "status": "Completed",
         "deadline": "2027-04-18",
         "milestones": [
@@ -171,5 +171,42 @@
     ],
     "sent_requests": [],
     "messages": []
+  },
+  {
+    "user_id": "C001",
+    "name": "Adham",
+    "email": "adhamahmed@gmail.com",
+    "password": "Adh12345#",
+    "role": "Client",
+    "projects_created": [],
+    "sent_requests": [],
+    "messages": []
+  },
+  {
+    "user_id": "F003",
+    "name": "Ahmed Mahmoud",
+    "email": "ahmedmahfouz@gmail.com",
+    "password": "Adh12345#",
+    "role": "Freelancer",
+    "skills": [
+      "python",
+      "web",
+      "gameing",
+      "design"
+    ],
+    "assigned_projects": [],
+    "received_requests": []
+  },
+  {
+    "user_id": "F004",
+    "name": "dkj",
+    "email": "dfjk@yahoo.com",
+    "password": "Adh12345#",
+    "role": "Freelancer",
+    "skills": [
+      "nothing"
+    ],
+    "assigned_projects": [],
+    "received_requests": []
   }
 ]

@@ -8,6 +8,7 @@ class Client(User):
 
         self.projects_created = []
         self.sent_requests = []
+        self.messages = []
 
     def add_project(self, project):
         if not isinstance(project, Project):
@@ -60,7 +61,6 @@ class Client(User):
 
         self.sent_requests.append(request)
 
-        print("Project request added to client history")
 
         return request
     
@@ -71,7 +71,7 @@ class Client(User):
 
         for request in self.sent_requests:
 
-            if request.id == request_id:
+            if str(request.get("project").id) == str(request_id):
                 return request
 
         return None
@@ -84,7 +84,7 @@ class Client(User):
         print("\n========== SENT REQUESTS ==========")
 
         for request in self.sent_requests:
-            print(request)
+            print(f"Project: {request['project'].title} | Freelancer: {request.get('freelancer_id', '')} | Status: {request['status']} | Message: {request.get('message', '')}")
 
 
 
@@ -110,7 +110,7 @@ class Client(User):
 
             "sent_requests": [],
 
-            "messages": []
+            "messages": self.messages
         }
 
     @classmethod
@@ -128,4 +128,5 @@ class Client(User):
 
             client.projects_created.append(project)
 
+        client.messages = data.get("messages", [])
         return client

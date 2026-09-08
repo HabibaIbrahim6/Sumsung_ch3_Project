@@ -39,7 +39,7 @@ class Project:
             self.status = "In Progress"
 
         else:
-            self.status = "Open"
+            self.status = "Assigned" if self.freelancer else "Open"
 
     def print_milestones(self):
 

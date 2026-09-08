@@ -101,11 +101,35 @@ class FreelanceManager:
                 request = {
                     "project": project,
                     "client": client,
+                    "freelancer_id": user.id,
                     "message": request_data.get("message", ""),
                     "status": request_data.get("status", "pending")
                 }
 
                 user.received_requests.append(request)
+                client.sent_requests.append(request)
+
+    def next_id(self, prefix):
+        ids = set(self.users)
+        ids.update(str(project.id) for project in self.projects)
+        ids.update(project.invoice.invoice_id for project in self.projects if project.invoice)
+        counter = 1
+        while helper_functions.generate_id(prefix, counter) in ids:
+            counter += 1
+        return helper_functions.generate_id(prefix, counter)
+
+    def delete_project(self, project):
+        if project not in self.projects:
+            return False
+        self.projects.remove(project)
+        project.client.delete_project(project.id)
+        for user in self.users.values():
+            if isinstance(user, Client):
+                user.sent_requests = [r for r in user.sent_requests if r.get("project") is not project]
+            elif isinstance(user, Freelancer):
+                user.assigned_projects = [p for p in user.assigned_projects if p is not project]
+                user.received_requests = [r for r in user.received_requests if r.get("project") is not project]
+        return True
 
     def get_project_by_id(self, project_id):
 
@@ -180,7 +204,7 @@ class FreelanceManager:
 
     def register_client(self,name,email,password):
 
-        user_id = helper_functions.generate_id("C",len(self.users) + 1)
+        user_id = self.next_id("C")
 
         client = Client(user_id,name,email,password)
 
@@ -198,7 +222,7 @@ class FreelanceManager:
 
     def register_freelancer(self,name,email,password,skills):
 
-        user_id = helper_functions.generate_id("F",len(self.users) + 1)
+        user_id = self.next_id("F")
 
         freelancer = Freelancer(user_id,name,email,password,skills)
 

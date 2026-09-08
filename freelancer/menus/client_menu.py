@@ -75,9 +75,7 @@ class ClientMenu:
 
         print("========== CREATE PROJECT ==========")
 
-        project_id = helper_functions.generate_id("P",len(self.client.projects_created) + 1)
-
-        print(f"Generated Project ID: {project_id}")
+        project_id = self.manager.next_id("P")
 
         title = val.get_valid_title("Enter project title: ")
 
@@ -96,11 +94,6 @@ class ClientMenu:
             milestones
         )
 
-        invoice_id = helper_functions.generate_id("INV",len(self.client.projects_created) + 1)
-
-        invoice = Invoice(invoice_id,project_id,budget)
-        project.add_invoice(invoice)
-
         self.client.add_project(project)
 
         self.manager.add_project(project)
@@ -113,7 +106,6 @@ class ClientMenu:
  
     def view_projects(self):
 
-        print("\n========== MY PROJECTS ==========")
         self.client.view_projects()
 
  
@@ -240,6 +232,15 @@ class ClientMenu:
 
        
 
+        if project.freelancer is not None:
+            print("Project is already assigned.")
+            return
+
+        if any(r.get("project") is project and r.get("status") == "pending"
+               for r in freelancer.received_requests):
+            print("A pending request already exists for this freelancer.")
+            return
+
         message = input("Enter your message: ").strip()
 
         if not message:
@@ -267,8 +268,6 @@ class ClientMenu:
  
     def view_requests(self):
 
-        print("\n========== SENT REQUESTS ==========")
-
         self.client.view_requests()
 
    
@@ -281,7 +280,6 @@ class ClientMenu:
    
     def delete_project(self):
 
-        print("\n========== DELETE PROJECT ==========")
 
         if not self.client.projects_created:
 
@@ -317,9 +315,7 @@ class ClientMenu:
             return
 
       
-        deleted = self.client.delete_project(
-            project_id
-        )
+        deleted = self.manager.delete_project(project)
 
         if deleted:
 
@@ -419,10 +415,7 @@ class ClientMenu:
             choice - 1
         ]
 
-        invoice_id = helper_functions.generate_id(
-            "INV",
-            len(candidate_projects) + 1
-        )
+        invoice_id = self.manager.next_id("INV")
 
         invoice = Invoice(
             invoice_id,

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from ..models.milestone import Milestone
+from .validators import get_valid_deadline
 
 if TYPE_CHECKING:
     from freelancer.models.freelancer import Freelancer
@@ -79,7 +80,7 @@ def get_milestones():
 
         description = input("Milestone description: ").strip()
 
-        deadline = input("Milestone deadline DD/MM/YYYY: ").strip()
+        deadline = get_valid_deadline("Milestone deadline DD/MM/YYYY: ")
 
         milestone = Milestone(title,description,deadline)
 

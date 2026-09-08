@@ -121,6 +121,11 @@ class FreelancerMenu:
             client = request.get("client")
             project = request.get("project")
 
+            if project.freelancer is not None:
+                request["status"] = "cancelled"
+                self.manager.save_users()
+                continue
+
             print(f"Client: {client.name}")
 
             print(f"Project: {project.title}")
@@ -190,7 +195,6 @@ class FreelancerMenu:
 
    
     def view_profile(self):
-        print("\n========== PROFILE ==========")
         self.freelancer.display_profile()
 
     def edit_profile(self):

@@ -1,5 +1,6 @@
 import re 
-from datetime import datetime
+import math
+from datetime import date, datetime
 
 #  Regex Patterns 
 
@@ -22,6 +23,7 @@ def check_password(self, password):
 
 
 def get_valid_deadline(message):
+    creation_day = date.today()
 
     while True:
 
@@ -30,6 +32,10 @@ def get_valid_deadline(message):
         try:
             deadline_date = datetime.strptime(date_input,"%d/%m/%Y")
 
+            if deadline_date.date() <= creation_day:
+                print("Deadline must be after today. Please enter tomorrow or a later date.")
+                continue
+
             return deadline_date.strftime("%Y-%m-%d")
 
         except ValueError:
@@ -37,7 +43,7 @@ def get_valid_deadline(message):
 
 def is_valid_amount(amount):
     try:
-        return float(amount) > 0
+        return math.isfinite(float(amount)) and float(amount) > 0
     except (ValueError, TypeError):
         return False
 
@@ -62,7 +68,7 @@ def get_valid_amount(message):
         try:
             valid_amount = float(amount)
 
-            if valid_amount > 0:
+            if is_valid_amount(valid_amount):
                 return valid_amount
             else:
                 print("Amount must be greater than 0")

@@ -32,7 +32,7 @@ class Freelancer(User):
         if not isinstance(project, Project):
             raise TypeError("project must be a Project object.")
 
-        if project in self.assigned_projects:
+        if project in self.assigned_projects or project.freelancer is not None:
             print("Project is already assigned.")
             return False
 
@@ -53,7 +53,6 @@ class Freelancer(User):
         if request in self.received_requests:
             raise ValueError("This request already exists.")
         self.received_requests.append(request)
-        print("Project request added to received_requests ")
 
     def get_pending_requests(self):
         return [request for request in self.received_requests if request.get("status") == "pending"]

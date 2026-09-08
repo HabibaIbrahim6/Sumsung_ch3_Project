@@ -6,13 +6,13 @@ class Invoice:
     def __init__(self, invoice_id, project_id, amount):
         self.invoice_id = invoice_id
         self.project_id = project_id
-        self.amount = int(amount)
+        self.amount = float(amount)
         self.status = "unpaid"
 
-        calculate_commission = commission_rate(amount)
+        calculate_commission = commission_rate(self.amount)
 
         self.platform_commission = calculate_commission()
-        self.freelancer_earnings = (amount - self.platform_commission)
+        self.freelancer_earnings = (self.amount - self.platform_commission)
 
     def display_invoice(self):
         print(f"Invoice ID: {self.invoice_id}")
