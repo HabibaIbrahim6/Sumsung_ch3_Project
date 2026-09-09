@@ -22,7 +22,6 @@ class ClientMenu:
     def show_menu(self):
 
         while True:
-
             print("\n=================================")
             print("          CLIENT MENU")
             print("=================================")
@@ -33,7 +32,7 @@ class ClientMenu:
             print("5. View Sent Requests")
             print("6. View Messages")
             print("7. View Profile")
-            print("8. Update Milestones")
+            print("8. Update Project")
             print("9. Generate Invoice")
             print("10. Delete Project")
             print("11. Logout")
@@ -63,7 +62,7 @@ class ClientMenu:
                 self.view_profile()
 
             elif choice == 8:
-                self.update_milestones()
+                self.update_project()
 
             elif choice == 9:
                 self.generate_invoice()
@@ -340,61 +339,104 @@ class ClientMenu:
             print("Project deleted successfully.")
 
    
-    def update_milestones(self):
+    def update_project(self):
 
-        print("\n========== UPDATE MILESTONES ==========")
+        print("\n========== UPDATE PROJECT ==========")
 
-        project_id = input(
-            "Enter the project ID: "
-        ).strip()
-
-        current_project = self.client.get_project_by_id(
-            project_id
-        )
-
-        if current_project is None:
-
-            print("Project ID not found.")
-
+        if not self.client.projects_created:
+            print("You have no projects to update.")
             return
 
-       
-        if not current_project.milestones:
+        self.client.view_projects()
 
-            print("This project has no milestones.")
+        project_id = input("\nEnter project ID: ").strip()
 
+        project = self.client.get_project_by_id(project_id)
+
+        if project is None:
+            print("Project not found.")
             return
 
-       
-        current_project.print_milestones()
+        print("\n========== UPDATE PROJECT ==========")
+        print("1. Update Title")
+        print("2. Update Budget")
+        print("3. Update Deadline")
+        print("4. Update Milestones")
+        print("5. Cancel")
 
-        milestone_choice = helper_functions.get_menu_choice(
-            1,
-            len(current_project.milestones),
-            "Choose milestone to update "
-        )
+        choice = helper_functions.get_menu_choice(1, 5)
 
-        current_milestone = current_project.milestones[
-            milestone_choice - 1
-        ]
+        if choice == 1:
 
-       
-        new_status = helper_functions.get_new_milestone_status()
+            new_title = val.get_valid_title(
+                "Enter new project title: "
+            )
 
-        current_milestone.update_status(
-            new_status
-        )
+            project.title = new_title
 
+        elif choice == 2:
 
+            new_budget = val.get_valid_amount(
+                "Enter new project budget: "
+            )
 
-        current_project.update_project_status()
+            project.budget = new_budget
 
+            # Update invoice amount if invoice exists
+            if project.invoice is not None:
+                project.invoice.amount = new_budget
+
+        elif choice == 3:
+
+            new_deadline = val.get_valid_deadline(
+                "Enter new deadline DD/MM/YYYY: "
+            )
+
+            project.deadline = new_deadline
+
+        elif choice == 4:
+
+            if not project.milestones:
+                print("This project has no milestones.")
+                return
+
+            project.print_milestones()
+
+            milestone_choice = helper_functions.get_menu_choice(
+                1,
+                len(project.milestones),
+                "Choose milestone to update "
+            )
+
+            milestone = project.milestones[milestone_choice - 1]
+
+            new_title = input(
+                "Enter new milestone title: "
+            ).strip()
+
+            new_description = input(
+                "Enter new milestone description: "
+            ).strip()
+
+            new_deadline = val.get_valid_deadline(
+                "Enter new milestone deadline DD/MM/YYYY: "
+            )
+
+            if new_title:
+                milestone.title = new_title
+
+            if new_description:
+                milestone.description = new_description
+
+            milestone.deadline = new_deadline
+
+        else:
+            print("Update cancelled.")
+            return
 
         self.manager.save_users()
 
-        print("\nMilestone status updated successfully.")
-
-    
+        print("\nProject updated successfully.")
 
     def generate_invoice(self):
 

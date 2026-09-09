@@ -1,5 +1,5 @@
-from user import User
-from project import Project
+from .user import User
+from .project import Project
 
 class Client(User):
 
@@ -86,7 +86,17 @@ class Client(User):
         print("\n========== SENT REQUESTS ==========")
 
         for request in self.sent_requests:
-            print(request)
+            project = request.get("project")
+            freelancer_id = request.get("freelancer_id")
+            message = request.get("message", "")
+            status = request.get("status", "pending")
+
+            print(f"Project ID: {project.id}")
+            print(f"Project Title: {project.title}")
+            print(f"Freelancer ID: {freelancer_id}")
+            print(f"Message: {message}")
+            print(f"Status: {status}")
+            print("-" * 40)
 
     def add_message(self, message):
         self.messages.append(message)
@@ -110,7 +120,7 @@ class Client(User):
             print(message)
 
     def display_profile(self):
-        super().display_profile()
+        super().display_profile() 
 
         print(f"Projects Created: {len(self.projects_created)}")
 

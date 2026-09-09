@@ -11,7 +11,7 @@
         "title": "E-commerce Website",
         "budget": 3000,
         "client": "C1",
-        "freelancer": "F001",
+        "freelancer": "F005",
         "status": "In Progress",
         "deadline": "2026-12-01",
         "milestones": [
@@ -31,7 +31,7 @@
         "invoice": {
           "invoice_id": "INV001",
           "project_id": "P001",
-          "amount": 3000,
+          "amount": 3000.0,
           "status": "unpaid",
           "platform_commission": 240.0,
           "freelancer_earnings": 2760.0
@@ -90,6 +90,18 @@
         "client_id": "C1",
         "message": "Looking for a full-stack dev for my store project.",
         "status": "accepted"
+      },
+      {
+        "project_id": "P001",
+        "client_id": "C006",
+        "message": "jkd",
+        "status": "pending"
+      },
+      {
+        "project_id": "P001",
+        "client_id": "C006",
+        "message": "KJ",
+        "status": "pending"
       }
     ]
   },
@@ -145,10 +157,10 @@
     "projects_created": [
       {
         "project_id": "P001",
-        "title": "first",
-        "budget": 100.0,
+        "title": "first Status",
+        "budget": 5.0,
         "client": "C006",
-        "freelancer": "F005",
+        "freelancer": null,
         "status": "Completed",
         "deadline": "2027-04-18",
         "milestones": [
@@ -162,10 +174,60 @@
         "invoice": {
           "invoice_id": "INV001",
           "project_id": "P001",
-          "amount": 100.0,
+          "amount": 5.0,
           "status": "unpaid",
           "platform_commission": 5.0,
           "freelancer_earnings": 95.0
+        }
+      },
+      {
+        "project_id": "P002",
+        "title": "jhewf",
+        "budget": 200.0,
+        "client": "C006",
+        "freelancer": null,
+        "status": "Open",
+        "deadline": "2026-09-10",
+        "milestones": [
+          {
+            "title": "BACKENF",
+            "description": "1WE",
+            "status": "Pending",
+            "deadline": "10/9/2026"
+          }
+        ],
+        "invoice": {
+          "invoice_id": "INV002",
+          "project_id": "P002",
+          "amount": 200.0,
+          "status": "unpaid",
+          "platform_commission": 10.0,
+          "freelancer_earnings": 190.0
+        }
+      },
+      {
+        "project_id": "P003",
+        "title": "صمثت",
+        "budget": 200.0,
+        "client": "C006",
+        "freelancer": null,
+        "status": "Open",
+        "deadline": "2026-09-10",
+        "milestones": [
+          {
+            "title": "BACKEND",
+            "description": "WED",
+            "status": "Pending",
+            "deadline": "2026-09-10"
+          }
+        ],
+        "invoice": {
+          "invoice_id": "INV003",
+          "project_id": "P003",
+          "amount": 200.0,
+          "status": "unpaid",
+          "platform_commission": 10.0,
+          "freelancer_earnings": 190.0
         }
       }
     ],

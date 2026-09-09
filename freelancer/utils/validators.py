@@ -28,12 +28,21 @@ def get_valid_deadline(message):
         date_input = input(message).strip()
 
         try:
-            deadline_date = datetime.strptime(date_input,"%d/%m/%Y")
+            deadline_date = datetime.strptime(
+                date_input,
+                "%d/%m/%Y"
+            )
+
+            if deadline_date.date() < datetime.today().date():
+                print("Invalid date. Deadline cannot be in the past.")
+                continue
 
             return deadline_date.strftime("%Y-%m-%d")
 
         except ValueError:
-            print("Invalid date. Please enter a valid date as DD/MM/YYYY.")
+            print(
+                "Invalid date. Please enter a valid date as DD/MM/YYYY."
+            )
 
 def is_valid_amount(amount):
     try:
